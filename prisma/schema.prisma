@@ -1,0 +1,457 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id             String   @id @default(cuid())
+  name           String
+  scopeStatement String?  @map("scope_statement")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  users              User[]
+  companyProfile     CompanyProfile?
+  roles              Role[]
+  roleAssignments    RoleAssignment[]
+  processes          Process[]
+  risks              Risk[]
+  problems           Problem[]
+  evidence           Evidence[]
+  evidenceVersions   EvidenceVersion[]
+  internalAudits     InternalAudit[]
+  managementReviews  ManagementReview[]
+  qualityObjectives  QualityObjective[]
+  tenantClauseScopes TenantClauseScope[]
+  auditTrails        AuditTrail[]
+  problemClauses     ProblemClause[]
+  evidenceClauses    EvidenceClause[]
+  auditProcesses     AuditProcess[]
+  auditClauses       AuditClause[]
+  reviewAttendees    ReviewAttendee[]
+
+  @@index([id], name: "idx_tenants_id")
+  @@map("tenants")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  tenantId  String   @map("tenant_id")
+  role      UserRole @default(CONTRIBUTOR)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  roleAssignments RoleAssignment[]
+  reviewAttendees ReviewAttendee[]
+
+  @@index([tenantId], name: "idx_users_tenant_id")
+  @@map("users")
+}
+
+model CompanyProfile {
+  id             String    @id @default(cuid())
+  tenantId       String    @unique @map("tenant_id")
+  companyName    String    @map("company_name")
+  address        String?
+  industry       String?
+  employeeCount  Int?      @map("employee_count")
+  establishedDate DateTime? @map("established_date")
+  description    String?
+  website        String?
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId], name: "idx_company_profile_tenant_id")
+  @@map("company_profiles")
+}
+
+model Role {
+  id                 String   @id @default(cuid())
+  tenantId           String   @map("tenant_id")
+  name               String
+  responsibilitiesText String @map("responsibilities_text")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  roleAssignments RoleAssignment[]
+
+  @@index([tenantId], name: "idx_roles_tenant_id")
+  @@map("roles")
+}
+
+model RoleAssignment {
+  id           String    @id @default(cuid())
+  tenantId    String    @map("tenant_id")
+  userId      String    @map("user_id")
+  roleId      String    @map("role_id")
+  assignedDate DateTime  @default(now()) @map("assigned_date")
+  notes       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId], name: "idx_role_assignments_tenant_id")
+  @@index([userId], name: "idx_role_assignments_user_id")
+  @@index([roleId], name: "idx_role_assignments_role_id")
+  @@map("role_assignments")
+}
+
+model IsoClause {
+  id                    String   @id @default(cuid())
+  code                  String   @unique
+  title                 String
+  plainEnglish          String   @map("plain_english")
+  auditorExpectation    String   @map("auditor_expectation")
+  requiredEvidenceTypes String[] @map("required_evidence_types")
+  moduleLinks           String[] @map("module_links")
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  tenantClauseScopes TenantClauseScope[]
+  evidenceClauses    EvidenceClause[]
+  problemClauses     ProblemClause[]
+  auditClauses       AuditClause[]
+
+  @@map("iso_clauses")
+}
+
+model TenantClauseScope {
+  id                String   @id @default(cuid())
+  tenantId          String   @map("tenant_id")
+  clauseId          String   @map("clause_id")
+  applicable        Boolean  @default(true)
+  justificationNotes String? @map("justification_notes")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  clause IsoClause @relation(fields: [clauseId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, clauseId])
+  @@index([tenantId], name: "idx_tenant_clause_scope_tenant_id")
+  @@map("tenant_clause_scopes")
+}
+
+model Process {
+  id          String   @id @default(cuid())
+  tenantId    String   @map("tenant_id")
+  name        String
+  description String?
+  ownerId     String?  @map("owner_id")
+  inputs      Json?
+  outputs     Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  risks          Risk[]
+  problems       Problem[]
+  auditProcesses AuditProcess[]
+
+  @@index([tenantId], name: "idx_processes_tenant_id")
+  @@map("processes")
+}
+
+model Risk {
+  id            String        @id @default(cuid())
+  tenantId      String        @map("tenant_id")
+  type          RiskType
+  description   String
+  processId     String?       @map("process_id")
+  impact        String?
+  likelihood    String?
+  ownerId       String?       @map("owner_id")
+  treatmentNotes String?      @map("treatment_notes")
+  status        RiskStatus    @default(OPEN)
+  reviewDate    DateTime?     @map("review_date")
+  reviewNotes   String?       @map("review_notes")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  process Process? @relation(fields: [processId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], name: "idx_risks_tenant_id")
+  @@map("risks")
+}
+
+model Problem {
+  id            String        @id @default(cuid())
+  tenantId      String        @map("tenant_id")
+  source        ProblemSource
+  description   String
+  dateIdentified DateTime     @map("date_identified")
+  rootCause     String?       @map("root_cause")
+  fixDescription String?     @map("fix_description")
+  responsibleId String?       @map("responsible_id")
+  dueDate       DateTime?     @map("due_date")
+  status        ProblemStatus @default(OPEN)
+  closureNotes String?       @map("closure_notes")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  process        Process?        @relation(fields: [processId], references: [id], onDelete: SetNull)
+  problemClauses ProblemClause[]
+
+  processId String?
+
+  @@index([tenantId], name: "idx_problems_tenant_id")
+  @@map("problems")
+}
+
+model ProblemClause {
+  id        String   @id @default(cuid())
+  problemId String   @map("problem_id")
+  clauseId String   @map("clause_id")
+  tenantId  String   @map("tenant_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  problem Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  clause  IsoClause @relation(fields: [clauseId], references: [id], onDelete: Cascade)
+  tenant  Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([problemId, clauseId])
+  @@index([tenantId], name: "idx_problem_clauses_tenant_id")
+  @@map("problem_clauses")
+}
+
+model Evidence {
+  id            String         @id @default(cuid())
+  tenantId      String         @map("tenant_id")
+  title         String
+  type          EvidenceType
+  ownerId       String?        @map("owner_id")
+  status        EvidenceStatus @default(DRAFT)
+  sourceType    EvidenceSourceType @map("source_type")
+  storageKey    String?        @map("storage_key")
+  externalUrl   String?        @map("external_url")
+  templateId    String?       @map("template_id")
+  currentVersion Int           @default(1) @map("current_version")
+  approvedById  String?        @map("approved_by_id")
+  approvedAt    DateTime?      @map("approved_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  evidenceVersions EvidenceVersion[]
+  evidenceClauses  EvidenceClause[]
+
+  @@index([tenantId], name: "idx_evidence_tenant_id")
+  @@index([status], name: "idx_evidence_status")
+  @@map("evidence")
+}
+
+model EvidenceVersion {
+  id          String   @id @default(cuid())
+  evidenceId  String   @map("evidence_id")
+  tenantId    String   @map("tenant_id")
+  version     Int
+  storageKey  String?  @map("storage_key")
+  externalUrl String?  @map("external_url")
+  uploadedById String? @map("uploaded_by_id")
+  uploadedAt  DateTime @default(now()) @map("uploaded_at")
+
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  evidence Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  @@unique([evidenceId, version])
+  @@map("evidence_versions")
+}
+
+model EvidenceClause {
+  id        String   @id @default(cuid())
+  evidenceId String  @map("evidence_id")
+  clauseId  String   @map("clause_id")
+  tenantId  String   @map("tenant_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  evidence Evidence  @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  clause   IsoClause @relation(fields: [clauseId], references: [id], onDelete: Cascade)
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([evidenceId, clauseId])
+  @@map("evidence_clauses")
+}
+
+model InternalAudit {
+  id             String    @id @default(cuid())
+  tenantId       String    @map("tenant_id")
+  auditDate      DateTime  @map("audit_date")
+  scope          String?
+  storageKey     String?   @map("storage_key")
+  findingsSummary String?  @map("findings_summary")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  auditProcesses AuditProcess[]
+  auditClauses   AuditClause[]
+
+  @@map("internal_audits")
+}
+
+model AuditProcess {
+  id        String   @id @default(cuid())
+  auditId  String   @map("audit_id")
+  processId String  @map("process_id")
+  tenantId  String   @map("tenant_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  audit   InternalAudit @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  process Process       @relation(fields: [processId], references: [id], onDelete: Cascade)
+  tenant  Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([auditId, processId])
+  @@index([tenantId], name: "idx_audit_processes_tenant_id")
+  @@map("audit_processes")
+}
+
+model AuditClause {
+  id        String   @id @default(cuid())
+  auditId  String   @map("audit_id")
+  clauseId String   @map("clause_id")
+  tenantId String   @map("tenant_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  audit  InternalAudit @relation(fields: [auditId], references: [id], onDelete: Cascade)
+  clause IsoClause     @relation(fields: [clauseId], references: [id], onDelete: Cascade)
+  tenant Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([auditId, clauseId])
+  @@index([tenantId], name: "idx_audit_clauses_tenant_id")
+  @@map("audit_clauses")
+}
+
+model ManagementReview {
+  id           String   @id @default(cuid())
+  tenantId     String   @map("tenant_id")
+  reviewDate   DateTime @map("review_date")
+  agendaItems  Json?
+  decisions    Json?
+  actions      Json?
+  storageKey   String?  @map("storage_key")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  reviewAttendees ReviewAttendee[]
+
+  @@map("management_reviews")
+}
+
+model ReviewAttendee {
+  id        String   @id @default(cuid())
+  reviewId  String   @map("review_id")
+  userId    String?  @map("user_id")
+  nameText  String?  @map("name_text")
+  tenantId  String   @map("tenant_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  review ManagementReview? @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  tenant Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId], name: "idx_review_attendees_tenant_id")
+  @@map("review_attendees")
+}
+
+model QualityObjective {
+  id          String   @id @default(cuid())
+  tenantId    String   @map("tenant_id")
+  name        String
+  description String?
+  measurement String?
+  target      String?
+  ownerId     String?  @map("owner_id")
+  statusNotes String?  @map("status_notes")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId], name: "idx_objectives_tenant_id")
+  @@map("quality_objectives")
+}
+
+model AuditTrail {
+  id         String   @id @default(cuid())
+  tenantId   String   @map("tenant_id")
+  userId     String   @map("user_id")
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
+  action     String
+  changes    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId], name: "idx_audit_trail_tenant_id")
+  @@index([entityType, entityId], name: "idx_audit_trail_entity")
+  @@map("audit_trails")
+}
+
+enum UserRole {
+  ADMIN
+  CONTRIBUTOR
+}
+
+enum RiskType {
+  RISK
+  OPPORTUNITY
+}
+
+enum RiskStatus {
+  OPEN
+  MANAGED
+  ACCEPTED
+  CLOSED
+}
+
+enum ProblemSource {
+  AUDIT
+  CUSTOMER_ISSUE
+  INTERNAL_ISSUE
+  OTHER
+}
+
+enum ProblemStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum EvidenceType {
+  POLICY
+  PROCEDURE
+  RECORD
+  TEMPLATE
+  OTHER
+}
+
+enum EvidenceStatus {
+  DRAFT
+  APPROVED
+  ARCHIVED
+}
+
+enum EvidenceSourceType {
+  UPLOAD
+  LINK
+  GENERATED
+}
