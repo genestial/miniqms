@@ -144,7 +144,7 @@ export async function getSignedUrl(
     Key: storageKey,
   })
 
-  return await getSignedUrl(s3Client, command, { expiresIn })
+  return await getS3SignedUrl(s3Client, command, { expiresIn })
 }
 
 /**
