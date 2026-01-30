@@ -24,8 +24,21 @@ export default function OnboardingStep6() {
     router.push('/dashboard')
   }
 
-  const handleSkip = () => {
-    router.push('/dashboard')
+  const handleSkip = async () => {
+    try {
+      await fetch('/api/onboarding/skip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 'Clause Applicability',
+          reason: 'Clause applicability review was skipped. You can configure this later in Settings.',
+        }),
+      })
+      router.push('/dashboard')
+    } catch (error) {
+      console.error('Failed to skip step:', error)
+      router.push('/dashboard') // Still redirect even if API call fails
+    }
   }
 
   if (loading) {

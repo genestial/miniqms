@@ -23,6 +23,39 @@ export async function getNextBestActions(
   const actions: NextBestAction[] = []
   const tenantDb = db(tenantId)
 
+  // 0. Check for skipped onboarding steps (check description for onboarding keywords)
+  const allOpenProblems = await tenantDb.problem.findMany({
+    where: {
+      status: 'OPEN',
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  })
+  
+  const skippedOnboarding = allOpenProblems.filter((p) => 
+    p.description && (
+      p.description.toLowerCase().includes('complete onboarding') ||
+      p.description.toLowerCase().includes('onboarding step')
+    )
+  ).slice(0, 3)
+  
+  for (const skipped of skippedOnboarding) {
+    // Extract step name from description
+    const stepMatch = skipped.description.match(/onboarding:?\s*(.+?)(?:\.|$)/i)
+    const stepName = stepMatch ? stepMatch[1] : 'onboarding step'
+    
+    actions.push({
+      id: `onboarding-skipped-${skipped.id}`,
+      priority: 75, // Lower than required steps but still important
+      clauseCode: '4.1',
+      clauseTitle: 'Understanding the organization',
+      description: skipped.description,
+      ctaLink: '/onboarding',
+      estimatedTime: '15 min',
+    })
+  }
+
   // 1. Check missing evidence requirements
   for (const clause of clauses) {
     const requirements = getEvidenceRequirements(clause.code)

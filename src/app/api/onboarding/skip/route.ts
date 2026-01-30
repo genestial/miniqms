@@ -27,13 +27,10 @@ export async function POST(request: NextRequest) {
     // This will show up in pending tasks
     await db(tenantId).problem.create({
       data: {
-        title: `Complete onboarding: ${step}`,
-        description: reason || `This onboarding step was skipped and needs to be completed.`,
-        type: 'IMPROVEMENT',
+        source: 'INTERNAL',
+        description: reason || `Complete onboarding: ${step}. This step was skipped and needs to be completed.`,
+        dateIdentified: new Date(),
         status: 'OPEN',
-        priority: 'MEDIUM',
-        // Tag it so we can identify onboarding tasks
-        tags: ['onboarding', 'setup', step],
       },
     })
 
