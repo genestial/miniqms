@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { getSignedUrl as getS3SignedUrl } from '@aws-sdk/s3-request-presigner'
 import { put as vercelPut, del as vercelDel, list as vercelList } from '@vercel/blob'
 
 // Check if using Vercel Blob
