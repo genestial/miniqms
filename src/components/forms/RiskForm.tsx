@@ -13,6 +13,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
 
 interface RiskFormProps {
@@ -69,21 +75,32 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {initialData ? 'Edit Risk/Opportunity' : 'Add Risk/Opportunity'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="type" className="flex items-center gap-2">
-              Type *
-              <span className="text-xs text-muted-foreground font-normal">
-                (Risk = something bad that might happen, Opportunity = something good you could pursue)
-              </span>
-            </Label>
+    <TooltipProvider>
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            {initialData ? 'Edit Risk/Opportunity' : 'Add Risk/Opportunity'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="type" className="flex items-center gap-2">
+                Type *
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      <strong>Risk:</strong> Something bad that might happen and affect your business quality or goals.
+                      <br />
+                      <br />
+                      <strong>Opportunity:</strong> Something positive you could pursue to improve your business.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
             <Select value={type} onValueChange={(v) => setType(v as any)}>
               <SelectTrigger>
                 <SelectValue />
@@ -95,13 +112,23 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
             </Select>
           </div>
 
-          <div>
-            <Label htmlFor="description" className="flex items-center gap-2">
-              Description *
-              <span className="text-xs text-muted-foreground font-normal">
-                (Plain English: What is the risk or opportunity? e.g., "Key employee might leave")
-              </span>
-            </Label>
+            <div>
+              <Label htmlFor="description" className="flex items-center gap-2">
+                Description *
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      Describe the risk or opportunity in plain English.
+                      <br />
+                      <br />
+                      <strong>Example:</strong> "Key employee might leave, causing knowledge loss"
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
             <Textarea
               id="description"
               value={description}
@@ -112,14 +139,28 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="impact" className="flex items-center gap-2">
-                Impact
-                <span className="text-xs text-muted-foreground font-normal">
-                  (How serious would this be? Low/Medium/High)
-                </span>
-              </Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="impact" className="flex items-center gap-2">
+                  Impact
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">
+                        How serious would this be if it happened?
+                        <br />
+                        <br />
+                        <strong>Low:</strong> Minor impact, easily manageable
+                        <br />
+                        <strong>Medium:</strong> Moderate impact, requires attention
+                        <br />
+                        <strong>High:</strong> Significant impact, could seriously affect business
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
               <Select value={impact} onValueChange={setImpact}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select impact" />
@@ -132,13 +173,27 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="likelihood" className="flex items-center gap-2">
-                Likelihood
-                <span className="text-xs text-muted-foreground font-normal">
-                  (How likely is this? Low/Medium/High)
-                </span>
-              </Label>
+              <div>
+                <Label htmlFor="likelihood" className="flex items-center gap-2">
+                  Likelihood
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="max-w-xs">
+                        How likely is this to happen?
+                        <br />
+                        <br />
+                        <strong>Low:</strong> Unlikely to occur
+                        <br />
+                        <strong>Medium:</strong> Possible, moderate chance
+                        <br />
+                        <strong>High:</strong> Very likely to happen
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </Label>
               <Select value={likelihood} onValueChange={setLikelihood}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select likelihood" />
@@ -152,13 +207,23 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="treatmentNotes" className="flex items-center gap-2">
-              Treatment/Mitigation Notes
-              <span className="text-xs text-muted-foreground font-normal">
-                (What will you do about it? e.g., "Train staff, implement backup process")
-              </span>
-            </Label>
+            <div>
+              <Label htmlFor="treatmentNotes" className="flex items-center gap-2">
+                Treatment/Mitigation Notes
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      What actions will you take to manage this risk or pursue this opportunity?
+                      <br />
+                      <br />
+                      <strong>Example:</strong> "Train staff on security best practices, implement regular audits, maintain backup systems"
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </Label>
             <Textarea
               id="treatmentNotes"
               value={treatmentNotes}
@@ -183,16 +248,17 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
             </Select>
           </div>
 
-          <div className="flex gap-2">
-            <Button type="submit" disabled={loading}>
-              {loading ? 'Saving...' : 'Save'}
-            </Button>
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+            <div className="flex gap-2">
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Saving...' : 'Save'}
+              </Button>
+              <Button type="button" variant="outline" onClick={onCancel}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   )
 }
