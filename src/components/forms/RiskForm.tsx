@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { HelpCircle } from 'lucide-react'
+import type { RiskExample } from '@/lib/risk-examples'
 
 interface RiskFormProps {
   onSubmit: (data: {
@@ -39,6 +40,7 @@ interface RiskFormProps {
     treatmentNotes?: string
     status?: string
   }
+  exampleData?: RiskExample
 }
 
 export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskFormProps) {
