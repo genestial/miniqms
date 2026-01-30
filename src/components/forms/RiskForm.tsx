@@ -75,7 +75,7 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={200}>
       <Card>
         <CardHeader>
           <CardTitle>
