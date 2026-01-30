@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     // Gather all data for system overview
     const [companyProfile, tenant, roles, processes, policies, objectives] =
       await Promise.all([
-        tenantDb.companyProfile.findUnique({}),
+        tenantDb.companyProfile.findUnique(),
         tenantDb.tenant.findUnique({ where: { id: tenantId } }),
         tenantDb.role.findMany(),
         tenantDb.process.findMany(),

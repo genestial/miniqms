@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     ]
 
     // Check if dashboard is empty
-    const companyProfile = await tenantDb.companyProfile.findUnique({})
+    const companyProfile = await tenantDb.companyProfile.findUnique()
     const processes = await tenantDb.process.findMany()
     const isEmpty = !companyProfile && processes.length === 0
 

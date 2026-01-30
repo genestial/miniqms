@@ -115,7 +115,7 @@ export async function getNextBestActions(
   }
 
   // 4. Check incomplete onboarding
-  const companyProfile = await tenantDb.companyProfile.findUnique({})
+  const companyProfile = await tenantDb.companyProfile.findUnique()
   const processes = await tenantDb.process.findMany()
   const risks = await tenantDb.risk.findMany()
   const reviews = await tenantDb.managementReview.findMany()
