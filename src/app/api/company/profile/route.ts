@@ -34,7 +34,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     const profile = await db(tenantId).companyProfile.upsert({
-      where: { tenantId },
       update: {
         companyName: body.companyName,
         address: body.address,
