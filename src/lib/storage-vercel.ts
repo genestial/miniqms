@@ -33,7 +33,9 @@ export async function uploadFileVercel(
   const path = `${tenantId}/${module}/${entityId}/${sanitizedFilename}`
 
   // Upload to Vercel Blob
-  const blob = await put(path, file, {
+  // Convert Buffer/Uint8Array to Blob for Vercel Blob API
+  const fileBlob = new Blob([file], { type: getContentType(filename) })
+  const blob = await put(path, fileBlob, {
     access: 'private', // Private access - we'll use signed URLs
     contentType: getContentType(filename),
   })

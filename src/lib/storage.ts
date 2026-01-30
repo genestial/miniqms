@@ -49,7 +49,9 @@ export async function uploadFile(
 
   // Use Vercel Blob if configured
   if (USE_VERCEL_BLOB) {
-    await vercelPut(storageKey, file, {
+    // Convert Buffer/Uint8Array to Blob for Vercel Blob API
+    const fileBlob = new Blob([file], { type: getContentType(filename) })
+    await vercelPut(storageKey, fileBlob, {
       access: 'private',
       contentType: getContentType(filename),
     })
