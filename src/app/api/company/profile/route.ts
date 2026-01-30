@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
-    const profile = await db(tenantId).companyProfile.findUnique({})
+    const profile = await db(tenantId).companyProfile.findUnique()
 
     return NextResponse.json(profile)
   } catch (error) {
