@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Plus } from 'lucide-react'
+import { RiskForm } from '@/components/forms/RiskForm'
 
 interface Risk {
   id: string
@@ -16,10 +18,16 @@ interface Risk {
 }
 
 export default function RisksPage() {
+  const router = useRouter()
   const [risks, setRisks] = useState<Risk[]>([])
   const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
+    fetchRisks()
+  }, [])
+
+  const fetchRisks = () => {
     fetch('/api/risks')
       .then((res) => res.json())
       .then((data) => {
@@ -30,7 +38,35 @@ export default function RisksPage() {
         console.error('Failed to load risks:', error)
         setLoading(false)
       })
-  }, [])
+  }
+
+  const handleRiskSubmit = async (data: {
+    type: 'RISK' | 'OPPORTUNITY'
+    description: string
+    impact?: string
+    likelihood?: string
+    treatmentNotes?: string
+    status?: string
+  }) => {
+    try {
+      const response = await fetch('/api/risks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create risk')
+      }
+
+      // Refresh the list
+      fetchRisks()
+      setShowForm(false)
+    } catch (error) {
+      console.error('Error creating risk:', error)
+      alert('Failed to create risk. Please try again.')
+    }
+  }
 
   if (loading) {
     return (
@@ -44,11 +80,27 @@ export default function RisksPage() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Risks & Opportunities</h1>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Risk/Opportunity
-        </Button>
+        {!showForm && (
+          <Button onClick={() => setShowForm(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Risk/Opportunity
+          </Button>
+        )}
       </div>
+
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Add New Risk or Opportunity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RiskForm
+              onSubmit={handleRiskSubmit}
+              onCancel={() => setShowForm(false)}
+            />
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {risks.map((risk) => (
