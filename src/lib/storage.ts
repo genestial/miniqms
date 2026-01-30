@@ -67,7 +67,7 @@ export async function uploadFile(
     }
     const fileBlob = new Blob([arrayBuffer], { type: getContentType(filename) })
     await vercelPut(storageKey, fileBlob, {
-      access: 'private',
+      access: 'public', // Vercel Blob only supports 'public' access
       contentType: getContentType(filename),
     })
     return storageKey
