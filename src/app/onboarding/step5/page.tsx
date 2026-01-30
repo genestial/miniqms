@@ -180,6 +180,27 @@ export default function OnboardingStep5() {
               >
                 Previous
               </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={async () => {
+                  try {
+                    await fetch('/api/onboarding/skip', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        step: 'Upload Quality Policy',
+                        reason: 'Quality Policy upload was skipped during onboarding. This is required for ISO 9001 compliance.',
+                      }),
+                    })
+                    router.push('/onboarding/step6')
+                  } catch (error) {
+                    console.error('Failed to skip step:', error)
+                  }
+                }}
+              >
+                Skip for Now
+              </Button>
               <Button type="submit" disabled={loading || !file} className="flex-1">
                 {loading ? 'Uploading...' : 'Next: Clause Applicability'}
               </Button>
