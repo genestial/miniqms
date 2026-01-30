@@ -101,7 +101,7 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
                   </TooltipContent>
                 </Tooltip>
               </Label>
-            <Select value={type} onValueChange={(v) => setType(v as any)}>
+              <Select value={type} onValueChange={(v) => setType(v as any)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -129,7 +129,7 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
                   </TooltipContent>
                 </Tooltip>
               </Label>
-            <Textarea
+              <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -161,7 +161,7 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
                     </TooltipContent>
                   </Tooltip>
                 </Label>
-              <Select value={impact} onValueChange={setImpact}>
+                <Select value={impact} onValueChange={setImpact}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select impact" />
                 </SelectTrigger>
@@ -194,7 +194,7 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
                     </TooltipContent>
                   </Tooltip>
                 </Label>
-              <Select value={likelihood} onValueChange={setLikelihood}>
+                <Select value={likelihood} onValueChange={setLikelihood}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select likelihood" />
                 </SelectTrigger>
@@ -224,7 +224,7 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
                   </TooltipContent>
                 </Tooltip>
               </Label>
-            <Textarea
+              <Textarea
               id="treatmentNotes"
               value={treatmentNotes}
               onChange={(e) => setTreatmentNotes(e.target.value)}
@@ -233,9 +233,9 @@ export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskF
             />
           </div>
 
-          <div>
-            <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={setStatus}>
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <Select value={status} onValueChange={setStatus}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

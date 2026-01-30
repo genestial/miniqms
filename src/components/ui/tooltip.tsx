@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils"
 
 const TooltipProvider = TooltipPrimitive.Provider
 
+// Configure tooltip delay (in milliseconds)
+// Default is usually 700ms, we'll reduce it for better UX
+const TOOLTIP_DELAY_DURATION = 200
+
 const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
