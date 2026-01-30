@@ -57,6 +57,12 @@ export function db(tenantId: string) {
         prisma.companyProfile.create({ ...args, data: { ...args.data, tenantId } }),
       update: (args: any) => 
         prisma.companyProfile.update({ where: { tenantId }, ...args }),
+      upsert: (args: any) => 
+        prisma.companyProfile.upsert({
+          where: { tenantId },
+          update: { ...args.update },
+          create: { ...args.create, tenantId },
+        }),
     },
 
     // Role operations
