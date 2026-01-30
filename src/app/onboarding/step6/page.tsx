@@ -39,7 +39,7 @@ export default function OnboardingStep6() {
     setLoading(true)
     try {
       // Save non-applicable clauses to tenant clause scope
-      for (const clauseId of nonApplicableClauses) {
+      for (const clauseId of Array.from(nonApplicableClauses)) {
         await fetch('/api/clauses/scope', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
