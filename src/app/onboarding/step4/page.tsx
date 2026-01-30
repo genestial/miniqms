@@ -55,7 +55,26 @@ export default function OnboardingStep4() {
         <CardHeader>
           <CardTitle>Step 4: Record First Management Review</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Record your first management review meeting. This demonstrates
+              leadership commitment to quality.
+            </p>
+            <div className="p-4 bg-muted/50 rounded-lg border">
+              <h3 className="font-medium text-sm mb-2">What is a Management Review?</h3>
+              <p className="text-xs text-muted-foreground mb-3">
+                A Management Review is a formal meeting where leadership evaluates your Quality Management System (QMS). 
+                It's an opportunity to review performance, discuss issues, make decisions, and ensure your QMS is working effectively.
+              </p>
+              <h4 className="font-medium text-xs mb-1">How often should it take place?</h4>
+              <p className="text-xs text-muted-foreground">
+                <strong>Recommended frequency:</strong> At least once per year, but many organizations conduct them quarterly or monthly. 
+                For ISO 9001 compliance, annual reviews are the minimum requirement. More frequent reviews (quarterly) help you stay on top of issues and make continuous improvements.
+              </p>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="reviewDate">Review Date *</Label>
