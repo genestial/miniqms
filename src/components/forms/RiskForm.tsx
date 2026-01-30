@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { HelpCircle } from 'lucide-react'
 
 interface RiskFormProps {
   onSubmit: (data: {
@@ -34,16 +35,19 @@ interface RiskFormProps {
   }
 }
 
-export function RiskForm({ onSubmit, onCancel, initialData }: RiskFormProps) {
-  const [type, setType] = useState<'RISK' | 'OPPORTUNITY'>(
-    initialData?.type || 'RISK'
-  )
-  const [description, setDescription] = useState(initialData?.description || '')
-  const [impact, setImpact] = useState(initialData?.impact || '')
-  const [likelihood, setLikelihood] = useState(initialData?.likelihood || '')
-  const [treatmentNotes, setTreatmentNotes] = useState(
-    initialData?.treatmentNotes || ''
-  )
+export function RiskForm({ onSubmit, onCancel, initialData, exampleData }: RiskFormProps) {
+  // Use example data if provided, otherwise use initial data
+  const defaultType = exampleData?.type || initialData?.type || 'RISK'
+  const defaultDescription = exampleData?.description || initialData?.description || ''
+  const defaultImpact = exampleData?.impact || initialData?.impact || ''
+  const defaultLikelihood = exampleData?.likelihood || initialData?.likelihood || ''
+  const defaultTreatmentNotes = exampleData?.treatmentNotes || initialData?.treatmentNotes || ''
+
+  const [type, setType] = useState<'RISK' | 'OPPORTUNITY'>(defaultType)
+  const [description, setDescription] = useState(defaultDescription)
+  const [impact, setImpact] = useState(defaultImpact)
+  const [likelihood, setLikelihood] = useState(defaultLikelihood)
+  const [treatmentNotes, setTreatmentNotes] = useState(defaultTreatmentNotes)
   const [status, setStatus] = useState(initialData?.status || 'OPEN')
   const [loading, setLoading] = useState(false)
 
@@ -74,7 +78,12 @@ export function RiskForm({ onSubmit, onCancel, initialData }: RiskFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="type">Type *</Label>
+            <Label htmlFor="type" className="flex items-center gap-2">
+              Type *
+              <span className="text-xs text-muted-foreground font-normal">
+                (Risk = something bad that might happen, Opportunity = something good you could pursue)
+              </span>
+            </Label>
             <Select value={type} onValueChange={(v) => setType(v as any)}>
               <SelectTrigger>
                 <SelectValue />
@@ -87,53 +96,75 @@ export function RiskForm({ onSubmit, onCancel, initialData }: RiskFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="description">Description *</Label>
+            <Label htmlFor="description" className="flex items-center gap-2">
+              Description *
+              <span className="text-xs text-muted-foreground font-normal">
+                (Plain English: What is the risk or opportunity? e.g., "Key employee might leave")
+              </span>
+            </Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
               rows={4}
+              placeholder="Describe the risk or opportunity in plain English..."
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="impact">Impact</Label>
+              <Label htmlFor="impact" className="flex items-center gap-2">
+                Impact
+                <span className="text-xs text-muted-foreground font-normal">
+                  (How serious would this be? Low/Medium/High)
+                </span>
+              </Label>
               <Select value={impact} onValueChange={setImpact}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select impact" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Low">Low</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="High">High</SelectItem>
+                  <SelectItem value="Low">Low - Minor impact</SelectItem>
+                  <SelectItem value="Medium">Medium - Moderate impact</SelectItem>
+                  <SelectItem value="High">High - Significant impact</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="likelihood">Likelihood</Label>
+              <Label htmlFor="likelihood" className="flex items-center gap-2">
+                Likelihood
+                <span className="text-xs text-muted-foreground font-normal">
+                  (How likely is this? Low/Medium/High)
+                </span>
+              </Label>
               <Select value={likelihood} onValueChange={setLikelihood}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select likelihood" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Low">Low</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="High">High</SelectItem>
+                  <SelectItem value="Low">Low - Unlikely</SelectItem>
+                  <SelectItem value="Medium">Medium - Possible</SelectItem>
+                  <SelectItem value="High">High - Likely</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="treatmentNotes">Treatment/Mitigation Notes</Label>
+            <Label htmlFor="treatmentNotes" className="flex items-center gap-2">
+              Treatment/Mitigation Notes
+              <span className="text-xs text-muted-foreground font-normal">
+                (What will you do about it? e.g., "Train staff, implement backup process")
+              </span>
+            </Label>
             <Textarea
               id="treatmentNotes"
               value={treatmentNotes}
               onChange={(e) => setTreatmentNotes(e.target.value)}
               rows={3}
+              placeholder="Describe how you'll manage this risk or pursue this opportunity..."
             />
           </div>
 
