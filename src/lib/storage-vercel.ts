@@ -34,18 +34,20 @@ export async function uploadFileVercel(
 
   // Upload to Vercel Blob
   // Convert Buffer/Uint8Array to ArrayBuffer for Blob constructor (Edge runtime compatible)
-  // Create a new ArrayBuffer to ensure proper type compatibility
+  // Create a new ArrayBuffer by copying data to ensure proper type compatibility
   let arrayBuffer: ArrayBuffer
   if (file instanceof Buffer) {
     // Create a new ArrayBuffer and copy Buffer data
-    arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength)
+    const uint8 = new Uint8Array(file)
+    arrayBuffer = uint8.buffer.slice(uint8.byteOffset, uint8.byteOffset + uint8.byteLength) as ArrayBuffer
   } else if (file instanceof Uint8Array) {
-    // Create a new ArrayBuffer from Uint8Array
-    arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength)
+    // Create a new ArrayBuffer from Uint8Array by copying
+    const copy = new Uint8Array(file)
+    arrayBuffer = copy.buffer.slice(copy.byteOffset, copy.byteOffset + copy.byteLength) as ArrayBuffer
   } else {
     // Fallback: create ArrayBuffer from the input
     const uint8 = new Uint8Array(file)
-    arrayBuffer = uint8.buffer.slice(uint8.byteOffset, uint8.byteOffset + uint8.byteLength)
+    arrayBuffer = uint8.buffer.slice(uint8.byteOffset, uint8.byteOffset + uint8.byteLength) as ArrayBuffer
   }
   const fileBlob = new Blob([arrayBuffer], { type: getContentType(filename) })
   const blob = await put(path, fileBlob, {
