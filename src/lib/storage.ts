@@ -49,19 +49,21 @@ export async function uploadFile(
 
   // Use Vercel Blob if configured
   if (USE_VERCEL_BLOB) {
-    // Convert Buffer/Uint8Array to Uint8Array for Blob constructor (Edge runtime compatible)
-    // Create a new Uint8Array to ensure proper type compatibility
-    let uint8Array: Uint8Array
+    // Convert Buffer/Uint8Array to ArrayBuffer for Blob constructor (Edge runtime compatible)
+    // Create a new ArrayBuffer to ensure proper type compatibility
+    let arrayBuffer: ArrayBuffer
     if (file instanceof Buffer) {
-      // Create a new Uint8Array from Buffer's underlying data
-      uint8Array = Uint8Array.from(file)
+      // Create a new ArrayBuffer and copy Buffer data
+      arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength)
     } else if (file instanceof Uint8Array) {
-      // Already a Uint8Array, but create a copy to ensure type compatibility
-      uint8Array = new Uint8Array(file)
+      // Create a new ArrayBuffer from Uint8Array
+      arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength)
     } else {
-      uint8Array = new Uint8Array(file)
+      // Fallback: create ArrayBuffer from the input
+      const uint8 = new Uint8Array(file)
+      arrayBuffer = uint8.buffer.slice(uint8.byteOffset, uint8.byteOffset + uint8.byteLength)
     }
-    const fileBlob = new Blob([uint8Array], { type: getContentType(filename) })
+    const fileBlob = new Blob([arrayBuffer], { type: getContentType(filename) })
     await vercelPut(storageKey, fileBlob, {
       access: 'private',
       contentType: getContentType(filename),
