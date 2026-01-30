@@ -34,11 +34,17 @@ export async function uploadFileVercel(
 
   // Upload to Vercel Blob
   // Convert Buffer/Uint8Array to Uint8Array for Blob constructor (Edge runtime compatible)
-  const uint8Array = file instanceof Buffer 
-    ? new Uint8Array(file)
-    : file instanceof Uint8Array 
-    ? file 
-    : new Uint8Array(file)
+  // Create a new Uint8Array to ensure proper type compatibility
+  let uint8Array: Uint8Array
+  if (file instanceof Buffer) {
+    // Create a new Uint8Array from Buffer's underlying data
+    uint8Array = Uint8Array.from(file)
+  } else if (file instanceof Uint8Array) {
+    // Already a Uint8Array, but create a copy to ensure type compatibility
+    uint8Array = new Uint8Array(file)
+  } else {
+    uint8Array = new Uint8Array(file)
+  }
   const fileBlob = new Blob([uint8Array], { type: getContentType(filename) })
   const blob = await put(path, fileBlob, {
     access: 'private', // Private access - we'll use signed URLs
