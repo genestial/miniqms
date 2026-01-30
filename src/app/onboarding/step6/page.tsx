@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 
 export default function OnboardingStep6() {
   const router = useRouter()
   const [clauses, setClauses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [nonApplicableClauses, setNonApplicableClauses] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     fetch('/api/clauses')
@@ -20,8 +23,39 @@ export default function OnboardingStep6() {
       })
   }, [])
 
-  const handleComplete = () => {
-    router.push('/dashboard')
+  const handleToggleApplicability = (clauseId: string) => {
+    setNonApplicableClauses((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(clauseId)) {
+        newSet.delete(clauseId)
+      } else {
+        newSet.add(clauseId)
+      }
+      return newSet
+    })
+  }
+
+  const handleComplete = async () => {
+    setLoading(true)
+    try {
+      // Save non-applicable clauses to tenant clause scope
+      for (const clauseId of nonApplicableClauses) {
+        await fetch('/api/clauses/scope', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clauseId,
+            applicable: false,
+          }),
+        })
+      }
+      router.push('/dashboard')
+    } catch (error) {
+      console.error('Failed to save clause applicability:', error)
+      router.push('/dashboard') // Still redirect even if save fails
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleSkip = async () => {
@@ -63,22 +97,42 @@ export default function OnboardingStep6() {
           </p>
 
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {clauses.map((clause) => (
-              <div
-                key={clause.id}
-                className="p-3 border rounded-lg flex justify-between items-center"
-              >
-                <div>
-                  <div className="font-medium">
-                    {clause.code} - {clause.title}
+            {clauses.map((clause) => {
+              const isNonApplicable = nonApplicableClauses.has(clause.id)
+              return (
+                <div
+                  key={clause.id}
+                  className={`p-3 border rounded-lg flex justify-between items-start gap-4 ${
+                    isNonApplicable ? 'bg-muted/50 opacity-75' : ''
+                  }`}
+                >
+                  <div className="flex-1">
+                    <div className="font-medium mb-1">
+                      {clause.code} - {clause.title}
+                    </div>
+                    <div className="text-sm text-muted-foreground mb-2">
+                      {clause.plainEnglish}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`clause-${clause.id}`}
+                        checked={isNonApplicable}
+                        onCheckedChange={() => handleToggleApplicability(clause.id)}
+                      />
+                      <Label
+                        htmlFor={`clause-${clause.id}`}
+                        className="text-xs cursor-pointer"
+                      >
+                        Mark as not applicable
+                      </Label>
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {clause.plainEnglish}
-                  </div>
+                  <Badge variant={isNonApplicable ? 'secondary' : 'default'}>
+                    {isNonApplicable ? 'Not Applicable' : 'Applicable'}
+                  </Badge>
                 </div>
-                <Badge variant="success">Applicable</Badge>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="flex gap-2 pt-4">

@@ -237,13 +237,28 @@ export function db(tenantId: string) {
         prisma.tenantClauseScope.findFirst({ 
           where: { ...args.where, tenantId } 
         }),
-      upsert: (args: any) => 
-        prisma.tenantClauseScope.upsert({ 
+      upsert: async (args: any) => {
+        // Handle composite key for upsert
+        if (args.where?.tenantId_clauseId) {
+          return prisma.tenantClauseScope.upsert({
+            where: {
+              tenantId_clauseId: {
+                tenantId: args.where.tenantId_clauseId.tenantId || tenantId,
+                clauseId: args.where.tenantId_clauseId.clauseId,
+              },
+            },
+            update: { ...args.update, tenantId },
+            create: { ...args.create, tenantId, clauseId: args.where.tenantId_clauseId.clauseId },
+          })
+        }
+        // Fallback for other where conditions
+        return prisma.tenantClauseScope.upsert({ 
           ...args, 
           where: { ...args.where, tenantId },
-          update: { ...args.update },
+          update: { ...args.update, tenantId },
           create: { ...args.create, tenantId },
-        }),
+        })
+      },
     },
 
     // Junction table operations with tenant validation
