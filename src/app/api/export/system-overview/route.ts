@@ -28,18 +28,26 @@ export async function GET(request: NextRequest) {
       ])
 
     const systemOverviewData = {
-      companyProfile: companyProfile || {
-        companyName: 'Not set',
-      },
-      scopeStatement: tenant?.scopeStatement,
+      companyProfile: companyProfile
+        ? {
+            companyName: companyProfile.companyName,
+            address: companyProfile.address ?? undefined,
+            industry: companyProfile.industry ?? undefined,
+            employeeCount: companyProfile.employeeCount ?? undefined,
+            description: companyProfile.description ?? undefined,
+          }
+        : {
+            companyName: 'Not set',
+          },
+      scopeStatement: tenant?.scopeStatement ?? undefined,
       roles: roles.map((r) => ({
         name: r.name,
         responsibilitiesText: r.responsibilitiesText,
       })),
       processes: processes.map((p) => ({
         name: p.name,
-        description: p.description || undefined,
-        ownerId: p.ownerId || undefined,
+        description: p.description ?? undefined,
+        ownerId: p.ownerId ?? undefined,
       })),
       policies: policies.map((p) => ({
         title: p.title,
@@ -47,8 +55,8 @@ export async function GET(request: NextRequest) {
       })),
       objectives: objectives.map((o) => ({
         name: o.name,
-        description: o.description || undefined,
-        target: o.target || undefined,
+        description: o.description ?? undefined,
+        target: o.target ?? undefined,
       })),
     }
 
