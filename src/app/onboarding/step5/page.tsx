@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { QUALITY_POLICY_TEMPLATE } from '@/lib/quality-policy-template'
+import { generateQualityPolicyDocx } from '@/lib/generate-quality-policy-docx'
 
 export default function OnboardingStep5() {
   const router = useRouter()
@@ -108,17 +109,22 @@ export default function OnboardingStep5() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => {
-                      const blob = new Blob([templateText], { type: 'text/plain' })
-                      const url = URL.createObjectURL(blob)
-                      const a = document.createElement('a')
-                      a.href = url
-                      a.download = 'quality-policy-template.txt'
-                      a.click()
-                      URL.revokeObjectURL(url)
+                    onClick={async () => {
+                      try {
+                        const blob = await generateQualityPolicyDocx(templateText)
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.href = url
+                        a.download = 'quality-policy-template.docx'
+                        a.click()
+                        URL.revokeObjectURL(url)
+                      } catch (error) {
+                        console.error('Failed to generate Word document:', error)
+                        alert('Failed to generate Word document. Please try again.')
+                      }
                     }}
                   >
-                    Download Template
+                    Download as Word Document
                   </Button>
                   <Button
                     type="button"
