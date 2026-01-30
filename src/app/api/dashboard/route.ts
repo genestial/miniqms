@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { calculateReadinessPercentage, getAllClauseCards } from '@/lib/compliance'
 import { getNextBestActions } from '@/lib/actions'
+import { getEvidenceRequirements } from '@/lib/standards'
+import type { IsoClause } from '@/lib/standards'
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,9 +29,18 @@ export async function GET(request: NextRequest) {
     const applicableClauseIds = new Set(
       tenantScopes.map((scope) => scope.clauseId)
     )
-    const applicableClauses = clauses.filter((clause) =>
-      applicableClauseIds.has(clause.id)
-    )
+    // Map database clauses to IsoClause interface
+    const applicableClauses: IsoClause[] = clauses
+      .filter((clause) => applicableClauseIds.has(clause.id))
+      .map((clause) => ({
+        id: clause.id,
+        code: clause.code,
+        title: clause.title,
+        plainEnglish: clause.plainEnglish,
+        auditorExpectation: clause.auditorExpectation,
+        requiredEvidenceTypes: getEvidenceRequirements(clause.code),
+        moduleLinks: clause.moduleLinks,
+      }))
 
     // Calculate readiness
     const percentage = await calculateReadinessPercentage(
