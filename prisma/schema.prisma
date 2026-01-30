@@ -8,8 +8,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   // Vercel Prisma Postgres uses PRISMA_DATABASE_URL
-  // For local dev, use DATABASE_URL in .env
-  url      = env("PRISMA_DATABASE_URL") ?? env("DATABASE_URL")
+  // For local dev, set DATABASE_URL in .env to same value as PRISMA_DATABASE_URL
+  url      = env("DATABASE_URL")
 }
 
 model Tenant {
