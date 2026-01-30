@@ -11,7 +11,18 @@ export async function POST(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
-    const body = await request.json()
+    
+    // This endpoint doesn't need a body, but check if one exists
+    let body = {}
+    try {
+      const text = await request.text()
+      if (text) {
+        body = JSON.parse(text)
+      }
+    } catch {
+      // No body or invalid JSON - that's fine for this endpoint
+      body = {}
+    }
 
     // Create default processes if they don't exist
     const defaultProcesses = [

@@ -24,12 +24,25 @@ export default function OnboardingStep2() {
   const handleCreateDefaults = async () => {
     setLoading(true)
     try {
-      await fetch('/api/onboarding/processes', { method: 'POST' })
-      const response = await fetch('/api/processes')
-      const data = await response.json()
+      const response = await fetch('/api/onboarding/processes', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}), // Send empty body explicitly
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to create default processes')
+      }
+      
+      // Refresh processes list
+      const processesResponse = await fetch('/api/processes')
+      const data = await processesResponse.json()
       setProcesses(data)
     } catch (error) {
       console.error('Failed to create default processes:', error)
+      alert('Failed to create default processes. Please try again.')
     } finally {
       setLoading(false)
     }
