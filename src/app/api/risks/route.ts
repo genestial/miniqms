@@ -35,15 +35,17 @@ export async function POST(request: NextRequest) {
     const tenantId = session.user.tenantId
     const body = await request.json()
 
+    console.log('Creating risk with data:', { tenantId, body })
+
     const risk = await db(tenantId).risk.create({
       data: {
         type: body.type,
         description: body.description,
-        processId: body.processId,
-        impact: body.impact,
-        likelihood: body.likelihood,
-        ownerId: body.ownerId,
-        treatmentNotes: body.treatmentNotes,
+        processId: body.processId || null,
+        impact: body.impact || null,
+        likelihood: body.likelihood || null,
+        ownerId: body.ownerId || null,
+        treatmentNotes: body.treatmentNotes || null,
         status: body.status || 'OPEN',
       },
     })
@@ -51,8 +53,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(risk)
   } catch (error) {
     console.error('Create risk error:', error)
+    // Return the actual error message for debugging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorDetails = error instanceof Error ? error.stack : String(error)
+    console.error('Error details:', errorDetails)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        message: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? errorDetails : undefined
+      },
       { status: 500 }
     )
   }

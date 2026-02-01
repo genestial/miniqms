@@ -56,7 +56,9 @@ export default function RisksPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to create risk')
+        const errorData = await response.json().catch(() => ({}))
+        console.error('API error response:', errorData)
+        throw new Error(errorData.message || 'Failed to create risk')
       }
 
       // Refresh the list
@@ -64,7 +66,8 @@ export default function RisksPage() {
       setShowForm(false)
     } catch (error) {
       console.error('Error creating risk:', error)
-      alert('Failed to create risk. Please try again.')
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create risk. Please try again.'
+      alert(errorMessage)
     }
   }
 
