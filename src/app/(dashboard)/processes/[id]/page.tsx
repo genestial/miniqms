@@ -100,16 +100,16 @@ export default function ProcessDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   if (!process) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Process not found</div>
+      <div className="loading-container">
+        <div className="loading-text">Process not found</div>
         <Button onClick={() => router.push('/processes')} className="mt-4">
           Back to Processes
         </Button>
@@ -119,7 +119,7 @@ export default function ProcessDetailPage() {
 
   if (editing) {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="detail-page-container">
         <Button variant="outline" onClick={() => setEditing(false)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
@@ -139,8 +139,8 @@ export default function ProcessDetailPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="detail-page-container">
+      <div className="detail-page-header">
         <Button variant="outline" onClick={() => router.push('/processes')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Processes
@@ -163,19 +163,19 @@ export default function ProcessDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">{process.name}</CardTitle>
+          <CardTitle className="detail-page-title">{process.name}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">Description</label>
-            <p className="mt-1 text-sm">
+        <CardContent className="detail-section">
+          <div className="detail-field">
+            <label className="detail-field-label">Description</label>
+            <p className="detail-field-value">
               {process.description || 'No description'}
             </p>
           </div>
 
           {process.inputs && Array.isArray(process.inputs) && process.inputs.length > 0 && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Inputs</label>
+            <div className="detail-field">
+              <label className="detail-field-label">Inputs</label>
               <ul className="mt-1 text-sm list-disc list-inside">
                 {process.inputs.map((input: string, idx: number) => (
                   <li key={idx}>{input}</li>
@@ -185,8 +185,8 @@ export default function ProcessDetailPage() {
           )}
 
           {process.outputs && Array.isArray(process.outputs) && process.outputs.length > 0 && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Outputs</label>
+            <div className="detail-field">
+              <label className="detail-field-label">Outputs</label>
               <ul className="mt-1 text-sm list-disc list-inside">
                 {process.outputs.map((output: string, idx: number) => (
                   <li key={idx}>{output}</li>
@@ -195,16 +195,16 @@ export default function ProcessDetailPage() {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Created</label>
-              <p className="mt-1 text-sm">
+          <div className="detail-grid detail-divider">
+            <div className="detail-field">
+              <label className="detail-field-label">Created</label>
+              <p className="detail-field-value">
                 {new Date(process.createdAt).toLocaleDateString()}
               </p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-              <p className="mt-1 text-sm">
+            <div className="detail-field">
+              <label className="detail-field-label">Last Updated</label>
+              <p className="detail-field-value">
                 {new Date(process.updatedAt).toLocaleDateString()}
               </p>
             </div>

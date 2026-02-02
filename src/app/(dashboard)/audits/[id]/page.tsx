@@ -103,16 +103,16 @@ export default function AuditDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   if (!audit) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Audit not found</div>
+      <div className="loading-container">
+        <div className="loading-text">Audit not found</div>
         <Button onClick={() => router.push('/audits')} className="mt-4">
           Back to Audits
         </Button>
@@ -122,7 +122,7 @@ export default function AuditDetailPage() {
 
   if (editing) {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="detail-page-container">
         <Button variant="outline" onClick={() => setEditing(false)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
@@ -148,8 +148,8 @@ export default function AuditDetailPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="detail-page-container">
+      <div className="detail-page-header">
         <Button variant="outline" onClick={() => router.push('/audits')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Audits
@@ -172,51 +172,51 @@ export default function AuditDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">
+          <CardTitle className="detail-page-title">
             Audit - {new Date(audit.auditDate).toLocaleDateString()}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">Audit Date</label>
-            <p className="mt-1 text-sm">
+        <CardContent className="detail-section">
+          <div className="detail-field">
+            <label className="detail-field-label">Audit Date</label>
+            <p className="detail-field-value">
               {new Date(audit.auditDate).toLocaleDateString()}
             </p>
           </div>
 
           {audit.scope && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Scope</label>
-              <p className="mt-1 text-sm whitespace-pre-wrap">{audit.scope}</p>
+            <div className="detail-field">
+              <label className="detail-field-label">Scope</label>
+              <p className="detail-field-value whitespace-pre-wrap">{audit.scope}</p>
             </div>
           )}
 
           {audit.findingsSummary && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Findings Summary</label>
-              <p className="mt-1 text-sm whitespace-pre-wrap">{audit.findingsSummary}</p>
+            <div className="detail-field">
+              <label className="detail-field-label">Findings Summary</label>
+              <p className="detail-field-value whitespace-pre-wrap">{audit.findingsSummary}</p>
             </div>
           )}
 
           {audit.storageKey && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Report</label>
+            <div className="detail-field">
+              <label className="detail-field-label">Report</label>
               <p className="mt-1">
                 <Badge variant="secondary">Report Available</Badge>
               </p>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Created</label>
-              <p className="mt-1 text-sm">
+          <div className="detail-grid detail-divider">
+            <div className="detail-field">
+              <label className="detail-field-label">Created</label>
+              <p className="detail-field-value">
                 {new Date(audit.createdAt).toLocaleDateString()}
               </p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-              <p className="mt-1 text-sm">
+            <div className="detail-field">
+              <label className="detail-field-label">Last Updated</label>
+              <p className="detail-field-value">
                 {new Date(audit.updatedAt).toLocaleDateString()}
               </p>
             </div>

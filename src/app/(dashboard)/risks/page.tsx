@@ -127,16 +127,16 @@ export default function RisksPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Risks & Opportunities</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Risks & Opportunities</h1>
         {!showForm && (
           <Button onClick={() => setShowForm(true)}>
             <Plus className="mr-2 h-4 w-4" />
@@ -167,25 +167,25 @@ export default function RisksPage() {
         </Card>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid-cards">
         {risks.map((risk) => (
           <Card 
             key={risk.id}
-            className="cursor-pointer hover:shadow-md transition-shadow"
+            className="card-item"
             onClick={() => router.push(`/risks/${risk.id}`)}
           >
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">
+                <CardTitle className="card-item-title">
                   {risk.type === 'RISK' ? 'Risk' : 'Opportunity'}
                 </CardTitle>
-                <Badge variant="outline">{risk.status.replace(/_/g, ' ')}</Badge>
+                <Badge variant="outline" className="status-badge">{risk.status.replace(/_/g, ' ')}</Badge>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-2">{risk.description}</p>
+              <p className="card-item-description-clamp">{risk.description}</p>
               {(risk.impact || risk.likelihood) && (
-                <div className="mt-4 flex gap-2 text-xs">
+                <div className="badge-group-inline">
                   {risk.impact && (
                     <Badge variant="secondary">Impact: {risk.impact}</Badge>
                   )}
@@ -196,12 +196,12 @@ export default function RisksPage() {
                   )}
                 </div>
               )}
-              <div className="flex gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
+              <div className="action-buttons" onClick={(e) => e.stopPropagation()}>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={(e) => handleEdit(risk, e)}
-                  className="flex-1"
+                  className="action-button"
                 >
                   <Edit className="mr-1 h-3 w-3" />
                   Edit
@@ -210,7 +210,7 @@ export default function RisksPage() {
                   variant="outline"
                   size="sm"
                   onClick={(e) => handleDelete(risk, e)}
-                  className="flex-1 text-destructive hover:text-destructive"
+                  className="action-button-destructive"
                 >
                   <Trash2 className="mr-1 h-3 w-3" />
                   Delete
@@ -223,7 +223,7 @@ export default function RisksPage() {
 
       {risks.length === 0 && !showForm && (
         <Card>
-          <CardContent className="pt-6 text-center text-muted-foreground">
+          <CardContent className="empty-state">
             No risks or opportunities yet. Add your first one to get started.
           </CardContent>
         </Card>

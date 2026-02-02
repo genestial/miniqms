@@ -172,7 +172,6 @@ export default function EvidencePage() {
       }
 
       fetchEvidence()
-      setDeletingEvidence(null)
     } catch (error) {
       console.error('Error deleting evidence:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete evidence. Please try again.'
@@ -187,16 +186,16 @@ export default function EvidencePage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Evidence Register</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Evidence Register</h1>
         {!showForm && (
           <Button onClick={() => setShowForm(true)}>
             <Plus className="mr-2 h-4 w-4" />
@@ -226,17 +225,17 @@ export default function EvidencePage() {
         </Card>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid-cards">
         {evidence.map((item) => (
           <Card 
             key={item.id} 
-            className="cursor-pointer hover:shadow-md transition-shadow"
+            className="card-item"
             onClick={() => router.push(`/evidence/${item.id}`)}
           >
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{item.title}</CardTitle>
-                <Badge variant="outline">{item.status.replace(/_/g, ' ')}</Badge>
+                <CardTitle className="card-item-title">{item.title}</CardTitle>
+                <Badge variant="outline" className="status-badge">{item.status.replace(/_/g, ' ')}</Badge>
               </div>
             </CardHeader>
             <CardContent>
@@ -256,12 +255,12 @@ export default function EvidencePage() {
                     </a>
                   </div>
                 )}
-                <div className="flex gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
+                <div className="action-buttons" onClick={(e) => e.stopPropagation()}>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={(e) => handleEdit(item, e)}
-                    className="flex-1"
+                    className="action-button"
                   >
                     <Edit className="mr-1 h-3 w-3" />
                     Edit
@@ -270,7 +269,7 @@ export default function EvidencePage() {
                     variant="outline"
                     size="sm"
                     onClick={(e) => handleDelete(item, e)}
-                    className="flex-1 text-destructive hover:text-destructive"
+                    className="action-button-destructive"
                   >
                     <Trash2 className="mr-1 h-3 w-3" />
                     Delete
@@ -282,10 +281,9 @@ export default function EvidencePage() {
         ))}
       </div>
 
-
       {evidence.length === 0 && !showForm && (
         <Card>
-          <CardContent className="pt-6 text-center text-muted-foreground">
+          <CardContent className="empty-state">
             No evidence yet. Add your first evidence item to get started.
           </CardContent>
         </Card>

@@ -104,16 +104,16 @@ export default function RiskDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   if (!risk) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Risk not found</div>
+      <div className="loading-container">
+        <div className="loading-text">Risk not found</div>
         <Button onClick={() => router.push('/risks')} className="mt-4">
           Back to Risks
         </Button>
@@ -123,7 +123,7 @@ export default function RiskDetailPage() {
 
   if (editing) {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="detail-page-container">
         <Button variant="outline" onClick={() => setEditing(false)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
@@ -152,8 +152,8 @@ export default function RiskDetailPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="detail-page-container">
+      <div className="detail-page-header">
         <Button variant="outline" onClick={() => router.push('/risks')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Risks
@@ -177,30 +177,30 @@ export default function RiskDetailPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-3xl">
+            <CardTitle className="detail-page-title">
               {risk.type === 'RISK' ? 'Risk' : 'Opportunity'}
             </CardTitle>
-            <Badge variant="outline">{risk.status.replace(/_/g, ' ')}</Badge>
+            <Badge variant="outline" className="status-badge">{risk.status.replace(/_/g, ' ')}</Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">Description</label>
-            <p className="mt-1 text-sm">{risk.description}</p>
+        <CardContent className="detail-section">
+          <div className="detail-field">
+            <label className="detail-field-label">Description</label>
+            <p className="detail-field-value">{risk.description}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="detail-grid">
             {risk.impact && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Impact</label>
+              <div className="detail-field">
+                <label className="detail-field-label">Impact</label>
                 <p className="mt-1">
                   <Badge variant="secondary">{risk.impact}</Badge>
                 </p>
               </div>
             )}
             {risk.likelihood && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Likelihood</label>
+              <div className="detail-field">
+                <label className="detail-field-label">Likelihood</label>
                 <p className="mt-1">
                   <Badge variant="secondary">{risk.likelihood}</Badge>
                 </p>
@@ -209,22 +209,22 @@ export default function RiskDetailPage() {
           </div>
 
           {risk.treatmentNotes && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Treatment Notes</label>
-              <p className="mt-1 text-sm whitespace-pre-wrap">{risk.treatmentNotes}</p>
+            <div className="detail-field">
+              <label className="detail-field-label">Treatment Notes</label>
+              <p className="detail-field-value whitespace-pre-wrap">{risk.treatmentNotes}</p>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Created</label>
-              <p className="mt-1 text-sm">
+          <div className="detail-grid detail-divider">
+            <div className="detail-field">
+              <label className="detail-field-label">Created</label>
+              <p className="detail-field-value">
                 {new Date(risk.createdAt).toLocaleDateString()}
               </p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-              <p className="mt-1 text-sm">
+            <div className="detail-field">
+              <label className="detail-field-label">Last Updated</label>
+              <p className="detail-field-value">
                 {new Date(risk.updatedAt).toLocaleDateString()}
               </p>
             </div>

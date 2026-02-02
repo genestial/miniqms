@@ -110,16 +110,16 @@ export default function EvidenceDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   if (!evidence) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Evidence not found</div>
+      <div className="loading-container">
+        <div className="loading-text">Evidence not found</div>
         <Button onClick={() => router.push('/evidence')} className="mt-4">
           Back to Evidence
         </Button>
@@ -129,7 +129,7 @@ export default function EvidenceDetailPage() {
 
   if (editing) {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="detail-page-container">
         <Button variant="outline" onClick={() => setEditing(false)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
@@ -157,8 +157,8 @@ export default function EvidenceDetailPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="detail-page-container">
+      <div className="detail-page-header">
         <Button variant="outline" onClick={() => router.push('/evidence')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Evidence
@@ -182,35 +182,35 @@ export default function EvidenceDetailPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-3xl">{evidence.title}</CardTitle>
-            <Badge variant="outline">{evidence.status.replace(/_/g, ' ')}</Badge>
+            <CardTitle className="detail-page-title">{evidence.title}</CardTitle>
+            <Badge variant="outline" className="status-badge">{evidence.status.replace(/_/g, ' ')}</Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Type</label>
+        <CardContent className="detail-section">
+          <div className="detail-grid">
+            <div className="detail-field">
+              <label className="detail-field-label">Type</label>
               <p className="mt-1">
                 <Badge variant="secondary">{evidence.type}</Badge>
               </p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Source Type</label>
+            <div className="detail-field">
+              <label className="detail-field-label">Source Type</label>
               <p className="mt-1">
                 <Badge variant="secondary">{evidence.sourceType.replace(/_/g, ' ')}</Badge>
               </p>
             </div>
             {evidence.ownerId && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Owner</label>
-                <p className="mt-1 text-sm">{evidence.ownerId}</p>
+              <div className="detail-field">
+                <label className="detail-field-label">Owner</label>
+                <p className="detail-field-value">{evidence.ownerId}</p>
               </div>
             )}
           </div>
 
           {evidence.externalUrl && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">External URL</label>
+            <div className="detail-field">
+              <label className="detail-field-label">External URL</label>
               <p className="mt-1">
                 <a
                   href={evidence.externalUrl}
@@ -225,24 +225,24 @@ export default function EvidenceDetailPage() {
           )}
 
           {evidence.storageKey && (
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">File</label>
-              <p className="mt-1 text-sm text-muted-foreground">
+            <div className="detail-field">
+              <label className="detail-field-label">File</label>
+              <p className="detail-field-value text-muted-foreground">
                 {evidence.storageKey.split('/').pop()}
               </p>
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Created</label>
-              <p className="mt-1 text-sm">
+          <div className="detail-grid detail-divider">
+            <div className="detail-field">
+              <label className="detail-field-label">Created</label>
+              <p className="detail-field-value">
                 {new Date(evidence.createdAt).toLocaleDateString()}
               </p>
             </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-              <p className="mt-1 text-sm">
+            <div className="detail-field">
+              <label className="detail-field-label">Last Updated</label>
+              <p className="detail-field-value">
                 {new Date(evidence.updatedAt).toLocaleDateString()}
               </p>
             </div>

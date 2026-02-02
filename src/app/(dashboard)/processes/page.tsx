@@ -123,16 +123,16 @@ export default function ProcessesPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Process Register</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Process Register</h1>
         {!showForm && (
           <Button onClick={() => setShowForm(true)}>
             <Plus className="mr-2 h-4 w-4" />
@@ -154,26 +154,26 @@ export default function ProcessesPage() {
         />
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid-cards">
         {processes.map((process) => (
           <Card 
             key={process.id}
-            className="cursor-pointer hover:shadow-md transition-shadow"
+            className="card-item"
             onClick={() => router.push(`/processes/${process.id}`)}
           >
             <CardHeader>
-              <CardTitle>{process.name}</CardTitle>
+              <CardTitle className="card-item-title">{process.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="card-item-description-clamp">
                 {process.description || 'No description'}
               </p>
-              <div className="flex gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
+              <div className="action-buttons" onClick={(e) => e.stopPropagation()}>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={(e) => handleEdit(process, e)}
-                  className="flex-1"
+                  className="action-button"
                 >
                   <Edit className="mr-1 h-3 w-3" />
                   Edit
@@ -182,7 +182,7 @@ export default function ProcessesPage() {
                   variant="outline"
                   size="sm"
                   onClick={(e) => handleDelete(process, e)}
-                  className="flex-1 text-destructive hover:text-destructive"
+                  className="action-button-destructive"
                 >
                   <Trash2 className="mr-1 h-3 w-3" />
                   Delete
@@ -195,7 +195,7 @@ export default function ProcessesPage() {
 
       {processes.length === 0 && !showForm && (
         <Card>
-          <CardContent className="pt-6 text-center text-muted-foreground">
+          <CardContent className="empty-state">
             No processes yet. Add your first process to get started.
           </CardContent>
         </Card>
