@@ -90,8 +90,8 @@ export function EvidenceForm({ onSubmit, onCancel, initialData }: EvidenceFormPr
     setFileError('')
 
     try {
-      // Validate file for UPLOAD source type
-      if (sourceType === 'UPLOAD' && !file) {
+      // Validate file for UPLOAD source type (only required for new evidence)
+      if (sourceType === 'UPLOAD' && !file && !initialData) {
         setFileError('Please select a file to upload')
         setLoading(false)
         return
@@ -222,14 +222,16 @@ export function EvidenceForm({ onSubmit, onCancel, initialData }: EvidenceFormPr
         {sourceType === 'UPLOAD' && (
           <div>
             <Label htmlFor="file" className="flex items-center gap-2">
-              File *
+              File {!initialData && '*'}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="max-w-xs">
-                    Upload a PDF, Word document, or text file (max 10MB).
+                    {initialData 
+                      ? 'Upload a new file to replace the existing one (optional). Leave empty to keep current file.'
+                      : 'Upload a PDF, Word document, or text file (max 10MB).'}
                     <br />
                     <br />
                     Supported formats: PDF, DOC, DOCX, TXT
@@ -252,6 +254,11 @@ export function EvidenceForm({ onSubmit, onCancel, initialData }: EvidenceFormPr
                   <span className="text-xs">
                     ({(file.size / 1024).toFixed(1)} KB)
                   </span>
+                </div>
+              )}
+              {initialData && !file && (
+                <div className="text-xs text-muted-foreground">
+                  Current file will be kept
                 </div>
               )}
             </div>

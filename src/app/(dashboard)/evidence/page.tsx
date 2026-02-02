@@ -4,7 +4,14 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Plus } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Plus, Edit, Trash2, Eye } from 'lucide-react'
 import { EvidenceForm } from '@/components/forms/EvidenceForm'
 
 interface Evidence {
@@ -15,12 +22,18 @@ interface Evidence {
   sourceType: string
   storageKey?: string | null
   externalUrl?: string | null
+  ownerId?: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export default function EvidencePage() {
   const [evidence, setEvidence] = useState<Evidence[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [editingEvidence, setEditingEvidence] = useState<Evidence | null>(null)
+  const [viewingEvidence, setViewingEvidence] = useState<Evidence | null>(null)
+  const [deletingEvidence, setDeletingEvidence] = useState<Evidence | null>(null)
 
   useEffect(() => {
     fetchEvidence()
@@ -48,75 +61,133 @@ export default function EvidencePage() {
     ownerId?: string
   }) => {
     try {
-      if (data.sourceType === 'UPLOAD' && data.file) {
-        // Upload file first
-        const formData = new FormData()
-        formData.append('file', data.file)
-        formData.append('title', data.title)
-        formData.append('type', data.type)
-        formData.append('sourceType', data.sourceType)
-        if (data.ownerId) {
-          formData.append('ownerId', data.ownerId)
-        }
-
-        const uploadResponse = await fetch('/api/evidence/upload', {
-          method: 'POST',
-          body: formData,
-        })
-
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json().catch(() => ({}))
-          throw new Error(errorData.message || 'Failed to upload evidence')
-        }
-      } else if (data.sourceType === 'LINK' && data.externalUrl) {
-        // Create evidence with external URL
+      if (editingEvidence) {
+        // Update existing evidence
         const response = await fetch('/api/evidence', {
-          method: 'POST',
+          method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            id: editingEvidence.id,
             title: data.title,
             type: data.type,
             sourceType: data.sourceType,
             externalUrl: data.externalUrl,
             ownerId: data.ownerId,
-            status: 'DRAFT',
+            status: editingEvidence.status, // Keep existing status
           }),
         })
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}))
-          throw new Error(errorData.message || 'Failed to create evidence')
-        }
-      } else if (data.sourceType === 'GENERATED') {
-        // Create evidence record for generated content
-        const response = await fetch('/api/evidence', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: data.title,
-            type: data.type,
-            sourceType: data.sourceType,
-            ownerId: data.ownerId,
-            status: 'DRAFT',
-          }),
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}))
-          throw new Error(errorData.message || 'Failed to create evidence')
+          throw new Error(errorData.message || 'Failed to update evidence')
         }
       } else {
-        throw new Error('Invalid source type or missing file/URL')
+        // Create new evidence
+        if (data.sourceType === 'UPLOAD' && data.file) {
+          // Upload file first
+          const formData = new FormData()
+          formData.append('file', data.file)
+          formData.append('title', data.title)
+          formData.append('type', data.type)
+          formData.append('sourceType', data.sourceType)
+          if (data.ownerId) {
+            formData.append('ownerId', data.ownerId)
+          }
+
+          const uploadResponse = await fetch('/api/evidence/upload', {
+            method: 'POST',
+            body: formData,
+          })
+
+          if (!uploadResponse.ok) {
+            const errorData = await uploadResponse.json().catch(() => ({}))
+            throw new Error(errorData.message || 'Failed to upload evidence')
+          }
+        } else if (data.sourceType === 'LINK' && data.externalUrl) {
+          // Create evidence with external URL
+          const response = await fetch('/api/evidence', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: data.title,
+              type: data.type,
+              sourceType: data.sourceType,
+              externalUrl: data.externalUrl,
+              ownerId: data.ownerId,
+              status: 'DRAFT',
+            }),
+          })
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}))
+            throw new Error(errorData.message || 'Failed to create evidence')
+          }
+        } else if (data.sourceType === 'GENERATED') {
+          // Create evidence record for generated content
+          const response = await fetch('/api/evidence', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: data.title,
+              type: data.type,
+              sourceType: data.sourceType,
+              ownerId: data.ownerId,
+              status: 'DRAFT',
+            }),
+          })
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}))
+            throw new Error(errorData.message || 'Failed to create evidence')
+          }
+        } else {
+          throw new Error('Invalid source type or missing file/URL')
+        }
       }
 
       // Refresh the list
       fetchEvidence()
       setShowForm(false)
+      setEditingEvidence(null)
     } catch (error) {
-      console.error('Error creating evidence:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create evidence. Please try again.'
+      console.error('Error saving evidence:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save evidence. Please try again.'
       alert(errorMessage)
     }
+  }
+
+  const handleEdit = (item: Evidence) => {
+    setEditingEvidence(item)
+    setShowForm(true)
+  }
+
+  const handleDelete = async (item: Evidence) => {
+    if (!confirm(`Are you sure you want to delete "${item.title}"? This action cannot be undone.`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/evidence?id=${item.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Failed to delete evidence')
+      }
+
+      fetchEvidence()
+      setDeletingEvidence(null)
+    } catch (error) {
+      console.error('Error deleting evidence:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete evidence. Please try again.'
+      alert(errorMessage)
+    }
+  }
+
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingEvidence(null)
   }
 
   if (loading) {
@@ -142,12 +213,19 @@ export default function EvidencePage() {
       {showForm && (
         <Card>
           <CardHeader>
-            <CardTitle>Add New Evidence</CardTitle>
+            <CardTitle>{editingEvidence ? 'Edit Evidence' : 'Add New Evidence'}</CardTitle>
           </CardHeader>
           <CardContent>
             <EvidenceForm
               onSubmit={handleEvidenceSubmit}
-              onCancel={() => setShowForm(false)}
+              onCancel={handleCancel}
+              initialData={editingEvidence ? {
+                title: editingEvidence.title,
+                type: editingEvidence.type as any,
+                sourceType: editingEvidence.sourceType as any,
+                externalUrl: editingEvidence.externalUrl || undefined,
+                ownerId: editingEvidence.ownerId || undefined,
+              } : undefined}
             />
           </CardContent>
         </Card>
@@ -155,7 +233,11 @@ export default function EvidencePage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {evidence.map((item) => (
-          <Card key={item.id}>
+          <Card 
+            key={item.id} 
+            className="cursor-pointer hover:shadow-md transition-shadow"
+            onClick={() => setViewingEvidence(item)}
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">{item.title}</CardTitle>
@@ -173,16 +255,133 @@ export default function EvidencePage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       View External Link →
                     </a>
                   </div>
                 )}
+                <div className="flex gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(item)}
+                    className="flex-1"
+                  >
+                    <Edit className="mr-1 h-3 w-3" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(item)}
+                    className="flex-1 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="mr-1 h-3 w-3" />
+                    Delete
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      <Dialog open={!!viewingEvidence} onOpenChange={(open) => !open && setViewingEvidence(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{viewingEvidence?.title}</DialogTitle>
+            <DialogDescription>
+              Evidence Details
+            </DialogDescription>
+          </DialogHeader>
+          {viewingEvidence && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Type</label>
+                  <p className="mt-1">
+                    <Badge variant="secondary">{viewingEvidence.type}</Badge>
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Status</label>
+                  <p className="mt-1">
+                    <Badge variant="outline">{viewingEvidence.status.replace(/_/g, ' ')}</Badge>
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Source Type</label>
+                  <p className="mt-1">
+                    <Badge variant="secondary">{viewingEvidence.sourceType.replace(/_/g, ' ')}</Badge>
+                  </p>
+                </div>
+                {viewingEvidence.ownerId && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">Owner</label>
+                    <p className="mt-1 text-sm">{viewingEvidence.ownerId}</p>
+                  </div>
+                )}
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Created</label>
+                  <p className="mt-1 text-sm">
+                    {new Date(viewingEvidence.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
+                  <p className="mt-1 text-sm">
+                    {new Date(viewingEvidence.updatedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              {viewingEvidence.externalUrl && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">External URL</label>
+                  <p className="mt-1">
+                    <a
+                      href={viewingEvidence.externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      {viewingEvidence.externalUrl}
+                    </a>
+                  </p>
+                </div>
+              )}
+              {viewingEvidence.storageKey && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">File</label>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {viewingEvidence.storageKey.split('/').pop()}
+                  </p>
+                </div>
+              )}
+              <div className="flex gap-2 pt-4">
+                <Button onClick={() => {
+                  setViewingEvidence(null)
+                  handleEdit(viewingEvidence)
+                }}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setViewingEvidence(null)
+                    handleDelete(viewingEvidence)
+                  }}
+                  className="text-destructive hover:text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {evidence.length === 0 && !showForm && (
         <Card>

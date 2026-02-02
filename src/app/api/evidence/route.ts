@@ -57,3 +57,83 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const tenantId = session.user.tenantId
+    const body = await request.json()
+    const { id, ...updateData } = body
+
+    if (!id) {
+      return NextResponse.json({ error: 'Evidence ID is required' }, { status: 400 })
+    }
+
+    const evidence = await db(tenantId).evidence.update({
+      where: { id },
+      data: {
+        title: updateData.title,
+        type: updateData.type,
+        ownerId: updateData.ownerId,
+        status: updateData.status,
+        sourceType: updateData.sourceType,
+        externalUrl: updateData.externalUrl,
+        templateId: updateData.templateId,
+      },
+    })
+
+    return NextResponse.json(evidence)
+  } catch (error) {
+    console.error('Update evidence error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json({ error: 'Evidence ID is required' }, { status: 400 })
+    }
+
+    // Get evidence to check for storage key before deletion
+    const evidence = await db(tenantId).evidence.findUnique({
+      where: { id },
+    })
+
+    if (!evidence) {
+      return NextResponse.json({ error: 'Evidence not found' }, { status: 404 })
+    }
+
+    // Delete the evidence record (cascade will handle related records)
+    await db(tenantId).evidence.delete({
+      where: { id },
+    })
+
+    // Note: File deletion from storage should be handled separately if needed
+    // For now, we'll just delete the database record
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Delete evidence error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
