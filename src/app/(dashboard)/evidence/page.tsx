@@ -234,7 +234,7 @@ export default function EvidencePage() {
           >
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="card-item-title">{item.title}</CardTitle>
+                <CardTitle>{item.title}</CardTitle>
                 <Badge variant="outline" className="status-badge">{item.status.replace(/_/g, ' ')}</Badge>
               </div>
             </CardHeader>

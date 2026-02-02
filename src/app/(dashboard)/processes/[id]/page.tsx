@@ -176,7 +176,7 @@ export default function ProcessDetailPage() {
           {process.inputs && Array.isArray(process.inputs) && process.inputs.length > 0 && (
             <div className="detail-field">
               <label className="detail-field-label">Inputs</label>
-              <ul className="mt-1 text-sm list-disc list-inside">
+              <ul className="detail-field-value list-disc list-inside">
                 {process.inputs.map((input: string, idx: number) => (
                   <li key={idx}>{input}</li>
                 ))}
@@ -187,7 +187,7 @@ export default function ProcessDetailPage() {
           {process.outputs && Array.isArray(process.outputs) && process.outputs.length > 0 && (
             <div className="detail-field">
               <label className="detail-field-label">Outputs</label>
-              <ul className="mt-1 text-sm list-disc list-inside">
+              <ul className="detail-field-value list-disc list-inside">
                 {process.outputs.map((output: string, idx: number) => (
                   <li key={idx}>{output}</li>
                 ))}

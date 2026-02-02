@@ -197,21 +197,21 @@ export default function AuditsPage() {
             onClick={() => router.push(`/audits/${audit.id}`)}
           >
             <CardHeader>
-              <CardTitle className="card-item-title">
+              <CardTitle>
                 Audit - {new Date(audit.auditDate).toLocaleDateString()}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {audit.scope && (
                 <div className="mb-2">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">Scope:</p>
-                  <p className="text-sm line-clamp-2">{audit.scope}</p>
+                  <p className="text-muted-small mb-1">Scope:</p>
+                  <p className="text-muted line-clamp-2">{audit.scope}</p>
                 </div>
               )}
               {audit.findingsSummary && (
                 <div className="mb-2">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">Findings:</p>
-                  <p className="text-sm line-clamp-3">{audit.findingsSummary}</p>
+                  <p className="text-muted-small mb-1">Findings:</p>
+                  <p className="text-muted line-clamp-3">{audit.findingsSummary}</p>
                 </div>
               )}
               {audit.storageKey && (

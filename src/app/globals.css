@@ -60,17 +60,20 @@
 
 @layer components {
   /* Card Item - Used for list/grid items */
+  /* Override Card component defaults when card-item class is present */
   .card-item {
     @apply rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:shadow-md transition-shadow;
   }
 
+  /* Override CardTitle defaults inside card-item - no need for card-item-title class */
   .card-item h3,
-  .card-item .card-item-title {
-    @apply text-lg font-semibold leading-none tracking-tight;
+  .card-item h3[class*="CardTitle"] {
+    @apply text-lg font-semibold leading-none tracking-tight !important;
   }
 
+  /* Override CardDescription defaults inside card-item */
   .card-item p,
-  .card-item .card-item-description {
+  .card-item p[class*="CardDescription"] {
     @apply text-sm text-muted-foreground;
   }
 
@@ -185,5 +188,14 @@
 
   .loading-text {
     @apply text-center;
+  }
+
+  /* Common Text Patterns */
+  .text-muted {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .text-muted-small {
+    @apply text-xs text-muted-foreground;
   }
 }

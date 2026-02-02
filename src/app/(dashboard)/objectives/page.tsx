@@ -32,23 +32,23 @@ export default function ObjectivesPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Quality Objectives</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Quality Objectives</h1>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Add Objective
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid-cards">
         {objectives.map((objective) => (
           <Card key={objective.id}>
             <CardHeader>
@@ -56,17 +56,17 @@ export default function ObjectivesPage() {
             </CardHeader>
             <CardContent>
               {objective.description && (
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="text-muted mb-2">
                   {objective.description}
                 </p>
               )}
               {objective.measurement && (
-                <p className="text-sm mb-1">
+                <p className="text-muted mb-1">
                   <strong>Measurement:</strong> {objective.measurement}
                 </p>
               )}
               {objective.target && (
-                <p className="text-sm">
+                <p className="text-muted">
                   <strong>Target:</strong> {objective.target}
                 </p>
               )}
@@ -77,7 +77,7 @@ export default function ObjectivesPage() {
 
       {objectives.length === 0 && (
         <Card>
-          <CardContent className="pt-6 text-center text-muted-foreground">
+          <CardContent className="empty-state">
             No quality objectives yet. Add your first objective to get started.
           </CardContent>
         </Card>

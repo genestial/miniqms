@@ -176,7 +176,7 @@ export default function RisksPage() {
           >
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="card-item-title">
+                <CardTitle>
                   {risk.type === 'RISK' ? 'Risk' : 'Opportunity'}
                 </CardTitle>
                 <Badge variant="outline" className="status-badge">{risk.status.replace(/_/g, ' ')}</Badge>

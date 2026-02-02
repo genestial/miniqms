@@ -182,7 +182,7 @@ export default function ProblemsPage() {
           >
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="card-item-title">
+                <CardTitle>
                   {problem.source.replace(/_/g, ' ')}
                 </CardTitle>
                 <Badge variant="outline" className="status-badge">{problem.status.replace(/_/g, ' ')}</Badge>

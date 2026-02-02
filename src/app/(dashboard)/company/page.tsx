@@ -43,15 +43,15 @@ export default function CompanyPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <h1 className="text-3xl font-bold">Company Profile & Organisation Context</h1>
+    <div className="page-container">
+      <h1 className="page-title">Company Profile & Organisation Context</h1>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
@@ -91,7 +91,7 @@ export default function CompanyPage() {
                 )}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted">
                 No company profile yet. Add one to get started.
               </p>
             )}
@@ -114,14 +114,14 @@ export default function CompanyPage() {
                 {roles.map((role) => (
                   <div key={role.id} className="border rounded-lg p-4">
                     <h3 className="font-semibold mb-2">{role.name}</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted">
                       {role.responsibilitiesText}
                     </p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted">
                 No roles defined yet. Add roles to get started.
               </p>
             )}

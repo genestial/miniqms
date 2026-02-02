@@ -32,23 +32,23 @@ export default function ReviewsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Management Reviews</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Management Reviews</h1>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Record Review
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid-cards">
         {reviews.map((review) => (
           <Card key={review.id}>
             <CardHeader>
@@ -58,17 +58,17 @@ export default function ReviewsPage() {
             </CardHeader>
             <CardContent>
               {review.agendaItems && Array.isArray(review.agendaItems) && (
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="text-muted mb-2">
                   {review.agendaItems.length} agenda items
                 </p>
               )}
               {review.decisions && Array.isArray(review.decisions) && (
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className="text-muted mb-2">
                   {review.decisions.length} decisions
                 </p>
               )}
               {review.actions && Array.isArray(review.actions) && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted">
                   {review.actions.length} actions
                 </p>
               )}
@@ -79,7 +79,7 @@ export default function ReviewsPage() {
 
       {reviews.length === 0 && (
         <Card>
-          <CardContent className="pt-6 text-center text-muted-foreground">
+          <CardContent className="empty-state">
             No management reviews yet. Record your first review to get started.
           </CardContent>
         </Card>

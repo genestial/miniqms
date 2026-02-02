@@ -47,16 +47,16 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">Loading...</div>
+      <div className="loading-container">
+        <div className="loading-text">Loading...</div>
       </div>
     )
   }
 
   if (!data) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="text-center text-destructive">
+      <div className="loading-container">
+        <div className="loading-text text-destructive">
           Failed to load dashboard data
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
   if (data.isEmpty) {
     return (
-      <div className="container mx-auto p-6 max-w-2xl">
+      <div className="page-container max-w-2xl">
         <EmptyDashboardState
           onResumeOnboarding={() => {
             window.location.href = '/onboarding'
@@ -76,9 +76,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+    <div className="page-container">
+      <div className="page-header">
+        <h1 className="page-title">Dashboard</h1>
       </div>
 
       <ReadinessSummary
