@@ -67,3 +67,71 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const tenantId = session.user.tenantId
+    const body = await request.json()
+    const { id, ...updateData } = body
+
+    if (!id) {
+      return NextResponse.json({ error: 'Risk ID is required' }, { status: 400 })
+    }
+
+    const risk = await db(tenantId).risk.update({
+      where: { id },
+      data: {
+        type: updateData.type,
+        description: updateData.description,
+        processId: updateData.processId || null,
+        impact: updateData.impact || null,
+        likelihood: updateData.likelihood || null,
+        ownerId: updateData.ownerId || null,
+        treatmentNotes: updateData.treatmentNotes || null,
+        status: updateData.status || 'OPEN',
+      },
+    })
+
+    return NextResponse.json(risk)
+  } catch (error) {
+    console.error('Update risk error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.tenantId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (!id) {
+      return NextResponse.json({ error: 'Risk ID is required' }, { status: 400 })
+    }
+
+    await db(tenantId).risk.delete({
+      where: { id },
+    })
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Delete risk error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
