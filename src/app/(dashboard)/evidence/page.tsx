@@ -1,17 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Plus, Edit, Trash2, Eye } from 'lucide-react'
+import { Plus, Edit, Trash2 } from 'lucide-react'
 import { EvidenceForm } from '@/components/forms/EvidenceForm'
 
 interface Evidence {
@@ -28,12 +22,11 @@ interface Evidence {
 }
 
 export default function EvidencePage() {
+  const router = useRouter()
   const [evidence, setEvidence] = useState<Evidence[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingEvidence, setEditingEvidence] = useState<Evidence | null>(null)
-  const [viewingEvidence, setViewingEvidence] = useState<Evidence | null>(null)
-  const [deletingEvidence, setDeletingEvidence] = useState<Evidence | null>(null)
 
   useEffect(() => {
     fetchEvidence()
@@ -156,12 +149,14 @@ export default function EvidencePage() {
     }
   }
 
-  const handleEdit = (item: Evidence) => {
+  const handleEdit = (item: Evidence, e: React.MouseEvent) => {
+    e.stopPropagation()
     setEditingEvidence(item)
     setShowForm(true)
   }
 
-  const handleDelete = async (item: Evidence) => {
+  const handleDelete = async (item: Evidence, e: React.MouseEvent) => {
+    e.stopPropagation()
     if (!confirm(`Are you sure you want to delete "${item.title}"? This action cannot be undone.`)) {
       return
     }
@@ -236,7 +231,7 @@ export default function EvidencePage() {
           <Card 
             key={item.id} 
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => setViewingEvidence(item)}
+            onClick={() => router.push(`/evidence/${item.id}`)}
           >
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -265,7 +260,7 @@ export default function EvidencePage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleEdit(item)}
+                    onClick={(e) => handleEdit(item, e)}
                     className="flex-1"
                   >
                     <Edit className="mr-1 h-3 w-3" />
@@ -274,7 +269,7 @@ export default function EvidencePage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDelete(item)}
+                    onClick={(e) => handleDelete(item, e)}
                     className="flex-1 text-destructive hover:text-destructive"
                   >
                     <Trash2 className="mr-1 h-3 w-3" />
@@ -287,101 +282,6 @@ export default function EvidencePage() {
         ))}
       </div>
 
-      <Dialog open={!!viewingEvidence} onOpenChange={(open) => !open && setViewingEvidence(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{viewingEvidence?.title}</DialogTitle>
-            <DialogDescription>
-              Evidence Details
-            </DialogDescription>
-          </DialogHeader>
-          {viewingEvidence && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Type</label>
-                  <p className="mt-1">
-                    <Badge variant="secondary">{viewingEvidence.type}</Badge>
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Status</label>
-                  <p className="mt-1">
-                    <Badge variant="outline">{viewingEvidence.status.replace(/_/g, ' ')}</Badge>
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Source Type</label>
-                  <p className="mt-1">
-                    <Badge variant="secondary">{viewingEvidence.sourceType.replace(/_/g, ' ')}</Badge>
-                  </p>
-                </div>
-                {viewingEvidence.ownerId && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Owner</label>
-                    <p className="mt-1 text-sm">{viewingEvidence.ownerId}</p>
-                  </div>
-                )}
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Created</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingEvidence.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingEvidence.updatedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              {viewingEvidence.externalUrl && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">External URL</label>
-                  <p className="mt-1">
-                    <a
-                      href={viewingEvidence.externalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline text-sm"
-                    >
-                      {viewingEvidence.externalUrl}
-                    </a>
-                  </p>
-                </div>
-              )}
-              {viewingEvidence.storageKey && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">File</label>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {viewingEvidence.storageKey.split('/').pop()}
-                  </p>
-                </div>
-              )}
-              <div className="flex gap-2 pt-4">
-                <Button onClick={() => {
-                  setViewingEvidence(null)
-                  handleEdit(viewingEvidence)
-                }}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setViewingEvidence(null)
-                    handleDelete(viewingEvidence)
-                  }}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
 
       {evidence.length === 0 && !showForm && (
         <Card>

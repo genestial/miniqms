@@ -11,6 +11,21 @@ export async function GET(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (id) {
+      // Return single evidence
+      const evidence = await db(tenantId).evidence.findUnique({
+        where: { id },
+      })
+      if (!evidence) {
+        return NextResponse.json({ error: 'Evidence not found' }, { status: 404 })
+      }
+      return NextResponse.json(evidence)
+    }
+
+    // Return all evidence
     const evidence = await db(tenantId).evidence.findMany({
       orderBy: { createdAt: 'desc' },
     })

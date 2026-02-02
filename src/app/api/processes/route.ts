@@ -11,6 +11,21 @@ export async function GET(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (id) {
+      // Return single process
+      const process = await db(tenantId).process.findUnique({
+        where: { id },
+      })
+      if (!process) {
+        return NextResponse.json({ error: 'Process not found' }, { status: 404 })
+      }
+      return NextResponse.json(process)
+    }
+
+    // Return all processes
     const processes = await db(tenantId).process.findMany({
       orderBy: { createdAt: 'desc' },
     })

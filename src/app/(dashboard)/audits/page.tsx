@@ -1,16 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { AuditForm } from '@/components/forms/AuditForm'
 
@@ -25,11 +19,11 @@ interface Audit {
 }
 
 export default function AuditsPage() {
+  const router = useRouter()
   const [audits, setAudits] = useState<Audit[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingAudit, setEditingAudit] = useState<Audit | null>(null)
-  const [viewingAudit, setViewingAudit] = useState<Audit | null>(null)
 
   useEffect(() => {
     fetchAudits()
@@ -121,12 +115,14 @@ export default function AuditsPage() {
     }
   }
 
-  const handleEdit = (audit: Audit) => {
+  const handleEdit = (audit: Audit, e: React.MouseEvent) => {
+    e.stopPropagation()
     setEditingAudit(audit)
     setShowForm(true)
   }
 
-  const handleDelete = async (audit: Audit) => {
+  const handleDelete = async (audit: Audit, e: React.MouseEvent) => {
+    e.stopPropagation()
     if (!confirm(`Are you sure you want to delete this audit? This action cannot be undone.`)) {
       return
     }
@@ -198,7 +194,7 @@ export default function AuditsPage() {
           <Card 
             key={audit.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => setViewingAudit(audit)}
+            onClick={() => router.push(`/audits/${audit.id}`)}
           >
             <CardHeader>
               <CardTitle>
@@ -227,7 +223,7 @@ export default function AuditsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleEdit(audit)}
+                  onClick={(e) => handleEdit(audit, e)}
                   className="flex-1"
                 >
                   <Edit className="mr-1 h-3 w-3" />
@@ -236,7 +232,7 @@ export default function AuditsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleDelete(audit)}
+                  onClick={(e) => handleDelete(audit, e)}
                   className="flex-1 text-destructive hover:text-destructive"
                 >
                   <Trash2 className="mr-1 h-3 w-3" />
@@ -256,80 +252,6 @@ export default function AuditsPage() {
         </Card>
       )}
 
-      <Dialog open={!!viewingAudit} onOpenChange={(open) => !open && setViewingAudit(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Audit - {viewingAudit && new Date(viewingAudit.auditDate).toLocaleDateString()}</DialogTitle>
-            <DialogDescription>
-              Internal Audit Details
-            </DialogDescription>
-          </DialogHeader>
-          {viewingAudit && (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Audit Date</label>
-                <p className="mt-1 text-sm">
-                  {new Date(viewingAudit.auditDate).toLocaleDateString()}
-                </p>
-              </div>
-              {viewingAudit.scope && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Scope</label>
-                  <p className="mt-1 text-sm">{viewingAudit.scope}</p>
-                </div>
-              )}
-              {viewingAudit.findingsSummary && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Findings Summary</label>
-                  <p className="mt-1 text-sm whitespace-pre-wrap">{viewingAudit.findingsSummary}</p>
-                </div>
-              )}
-              {viewingAudit.storageKey && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Report</label>
-                  <p className="mt-1">
-                    <Badge variant="secondary">Report Available</Badge>
-                  </p>
-                </div>
-              )}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Created</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingAudit.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingAudit.updatedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 pt-4">
-                <Button onClick={() => {
-                  setViewingAudit(null)
-                  handleEdit(viewingAudit)
-                }}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setViewingAudit(null)
-                    handleDelete(viewingAudit)
-                  }}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

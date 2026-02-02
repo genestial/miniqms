@@ -1,15 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { ProcessForm } from '@/components/forms/ProcessForm'
 
@@ -25,11 +19,11 @@ interface Process {
 }
 
 export default function ProcessesPage() {
+  const router = useRouter()
   const [processes, setProcesses] = useState<Process[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingProcess, setEditingProcess] = useState<Process | null>(null)
-  const [viewingProcess, setViewingProcess] = useState<Process | null>(null)
 
   useEffect(() => {
     fetchProcesses()
@@ -92,12 +86,14 @@ export default function ProcessesPage() {
     }
   }
 
-  const handleEdit = (process: Process) => {
+  const handleEdit = (process: Process, e: React.MouseEvent) => {
+    e.stopPropagation()
     setEditingProcess(process)
     setShowForm(true)
   }
 
-  const handleDelete = async (process: Process) => {
+  const handleDelete = async (process: Process, e: React.MouseEvent) => {
+    e.stopPropagation()
     if (!confirm(`Are you sure you want to delete "${process.name}"? This action cannot be undone.`)) {
       return
     }
@@ -163,7 +159,7 @@ export default function ProcessesPage() {
           <Card 
             key={process.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => setViewingProcess(process)}
+            onClick={() => router.push(`/processes/${process.id}`)}
           >
             <CardHeader>
               <CardTitle>{process.name}</CardTitle>
@@ -176,7 +172,7 @@ export default function ProcessesPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleEdit(process)}
+                  onClick={(e) => handleEdit(process, e)}
                   className="flex-1"
                 >
                   <Edit className="mr-1 h-3 w-3" />
@@ -185,7 +181,7 @@ export default function ProcessesPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleDelete(process)}
+                  onClick={(e) => handleDelete(process, e)}
                   className="flex-1 text-destructive hover:text-destructive"
                 >
                   <Trash2 className="mr-1 h-3 w-3" />
@@ -205,80 +201,6 @@ export default function ProcessesPage() {
         </Card>
       )}
 
-      <Dialog open={!!viewingProcess} onOpenChange={(open) => !open && setViewingProcess(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{viewingProcess?.name}</DialogTitle>
-            <DialogDescription>
-              Process Details
-            </DialogDescription>
-          </DialogHeader>
-          {viewingProcess && (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Description</label>
-                <p className="mt-1 text-sm">
-                  {viewingProcess.description || 'No description'}
-                </p>
-              </div>
-              {viewingProcess.inputs && Array.isArray(viewingProcess.inputs) && viewingProcess.inputs.length > 0 && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Inputs</label>
-                  <ul className="mt-1 text-sm list-disc list-inside">
-                    {viewingProcess.inputs.map((input: string, idx: number) => (
-                      <li key={idx}>{input}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {viewingProcess.outputs && Array.isArray(viewingProcess.outputs) && viewingProcess.outputs.length > 0 && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Outputs</label>
-                  <ul className="mt-1 text-sm list-disc list-inside">
-                    {viewingProcess.outputs.map((output: string, idx: number) => (
-                      <li key={idx}>{output}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Created</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingProcess.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingProcess.updatedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 pt-4">
-                <Button onClick={() => {
-                  setViewingProcess(null)
-                  handleEdit(viewingProcess)
-                }}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setViewingProcess(null)
-                    handleDelete(viewingProcess)
-                  }}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

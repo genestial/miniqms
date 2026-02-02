@@ -11,6 +11,21 @@ export async function GET(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (id) {
+      // Return single problem
+      const problem = await db(tenantId).problem.findUnique({
+        where: { id },
+      })
+      if (!problem) {
+        return NextResponse.json({ error: 'Problem not found' }, { status: 404 })
+      }
+      return NextResponse.json(problem)
+    }
+
+    // Return all problems
     const problems = await db(tenantId).problem.findMany({
       orderBy: { createdAt: 'desc' },
     })

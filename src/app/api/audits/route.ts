@@ -11,6 +11,21 @@ export async function GET(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (id) {
+      // Return single audit
+      const audit = await db(tenantId).internalAudit.findUnique({
+        where: { id },
+      })
+      if (!audit) {
+        return NextResponse.json({ error: 'Audit not found' }, { status: 404 })
+      }
+      return NextResponse.json(audit)
+    }
+
+    // Return all audits
     const audits = await db(tenantId).internalAudit.findMany({
       orderBy: { auditDate: 'desc' },
     })

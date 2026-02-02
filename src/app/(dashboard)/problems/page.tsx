@@ -1,16 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { ProblemForm } from '@/components/forms/ProblemForm'
 
@@ -29,11 +23,11 @@ interface Problem {
 }
 
 export default function ProblemsPage() {
+  const router = useRouter()
   const [problems, setProblems] = useState<Problem[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
-  const [viewingProblem, setViewingProblem] = useState<Problem | null>(null)
 
   useEffect(() => {
     fetchProblems()
@@ -100,12 +94,14 @@ export default function ProblemsPage() {
     }
   }
 
-  const handleEdit = (problem: Problem) => {
+  const handleEdit = (problem: Problem, e: React.MouseEvent) => {
+    e.stopPropagation()
     setEditingProblem(problem)
     setShowForm(true)
   }
 
-  const handleDelete = async (problem: Problem) => {
+  const handleDelete = async (problem: Problem, e: React.MouseEvent) => {
+    e.stopPropagation()
     if (!confirm(`Are you sure you want to delete this problem? This action cannot be undone.`)) {
       return
     }
@@ -182,7 +178,7 @@ export default function ProblemsPage() {
           <Card 
             key={problem.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => setViewingProblem(problem)}
+            onClick={() => router.push(`/problems/${problem.id}`)}
           >
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -211,7 +207,7 @@ export default function ProblemsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleEdit(problem)}
+                  onClick={(e) => handleEdit(problem, e)}
                   className="flex-1"
                 >
                   <Edit className="mr-1 h-3 w-3" />
@@ -220,7 +216,7 @@ export default function ProblemsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleDelete(problem)}
+                  onClick={(e) => handleDelete(problem, e)}
                   className="flex-1 text-destructive hover:text-destructive"
                 >
                   <Trash2 className="mr-1 h-3 w-3" />
@@ -240,102 +236,6 @@ export default function ProblemsPage() {
         </Card>
       )}
 
-      <Dialog open={!!viewingProblem} onOpenChange={(open) => !open && setViewingProblem(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{viewingProblem?.source.replace(/_/g, ' ')}</DialogTitle>
-            <DialogDescription>
-              Problem/Improvement Details
-            </DialogDescription>
-          </DialogHeader>
-          {viewingProblem && (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Description</label>
-                <p className="mt-1 text-sm">{viewingProblem.description}</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Source</label>
-                  <p className="mt-1 text-sm">{viewingProblem.source.replace(/_/g, ' ')}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Status</label>
-                  <p className="mt-1">
-                    <Badge variant="outline">{viewingProblem.status.replace(/_/g, ' ')}</Badge>
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Date Identified</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingProblem.dateIdentified).toLocaleDateString()}
-                  </p>
-                </div>
-                {viewingProblem.dueDate && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Due Date</label>
-                    <p className="mt-1 text-sm">
-                      {new Date(viewingProblem.dueDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-              </div>
-              {viewingProblem.rootCause && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Root Cause</label>
-                  <p className="mt-1 text-sm">{viewingProblem.rootCause}</p>
-                </div>
-              )}
-              {viewingProblem.fixDescription && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Fix Description</label>
-                  <p className="mt-1 text-sm">{viewingProblem.fixDescription}</p>
-                </div>
-              )}
-              {viewingProblem.responsibleId && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Responsible</label>
-                  <p className="mt-1 text-sm">{viewingProblem.responsibleId}</p>
-                </div>
-              )}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Created</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingProblem.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-                  <p className="mt-1 text-sm">
-                    {new Date(viewingProblem.updatedAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-2 pt-4">
-                <Button onClick={() => {
-                  setViewingProblem(null)
-                  handleEdit(viewingProblem)
-                }}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setViewingProblem(null)
-                    handleDelete(viewingProblem)
-                  }}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

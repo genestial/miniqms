@@ -11,6 +11,21 @@ export async function GET(request: NextRequest) {
     }
 
     const tenantId = session.user.tenantId
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    if (id) {
+      // Return single risk
+      const risk = await db(tenantId).risk.findUnique({
+        where: { id },
+      })
+      if (!risk) {
+        return NextResponse.json({ error: 'Risk not found' }, { status: 404 })
+      }
+      return NextResponse.json(risk)
+    }
+
+    // Return all risks
     const risks = await db(tenantId).risk.findMany({
       orderBy: { createdAt: 'desc' },
     })
