@@ -232,13 +232,13 @@ export default function EvidencePage() {
             className="card-item"
             onClick={() => router.push(`/evidence/${item.id}`)}
           >
-            <CardHeader>
+            <CardHeader className="card-item-header">
               <div className="flex items-center justify-between">
                 <CardTitle>{item.title}</CardTitle>
                 <Badge variant="outline" className="status-badge">{item.status.replace(/_/g, ' ')}</Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="card-item-content">
               <div className="space-y-2">
                 <Badge variant="secondary">{item.type}</Badge>
                 <Badge variant="secondary">{item.sourceType.replace(/_/g, ' ')}</Badge>

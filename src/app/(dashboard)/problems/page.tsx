@@ -180,7 +180,7 @@ export default function ProblemsPage() {
             className="card-item"
             onClick={() => router.push(`/problems/${problem.id}`)}
           >
-            <CardHeader>
+            <CardHeader className="card-item-header">
               <div className="flex items-center justify-between">
                 <CardTitle>
                   {problem.source.replace(/_/g, ' ')}
@@ -188,7 +188,7 @@ export default function ProblemsPage() {
                 <Badge variant="outline" className="status-badge">{problem.status.replace(/_/g, ' ')}</Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="card-item-content">
               <p className="card-item-description-clamp">
                 {problem.description}
               </p>

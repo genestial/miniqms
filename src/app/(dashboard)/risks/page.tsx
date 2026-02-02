@@ -174,7 +174,7 @@ export default function RisksPage() {
             className="card-item"
             onClick={() => router.push(`/risks/${risk.id}`)}
           >
-            <CardHeader>
+            <CardHeader className="card-item-header">
               <div className="flex items-center justify-between">
                 <CardTitle>
                   {risk.type === 'RISK' ? 'Risk' : 'Opportunity'}
@@ -182,7 +182,7 @@ export default function RisksPage() {
                 <Badge variant="outline" className="status-badge">{risk.status.replace(/_/g, ' ')}</Badge>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="card-item-content">
               <p className="card-item-description-clamp">{risk.description}</p>
               {(risk.impact || risk.likelihood) && (
                 <div className="badge-group-inline">

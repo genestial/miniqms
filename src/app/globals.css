@@ -65,6 +65,14 @@
     @apply rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer hover:shadow-md transition-shadow;
   }
 
+  .card-item-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-item-content {
+    @apply p-6 pt-0;
+  }
+
   /* Override CardTitle defaults inside card-item - no need for card-item-title class */
   .card-item h3,
   .card-item h3[class*="CardTitle"] {

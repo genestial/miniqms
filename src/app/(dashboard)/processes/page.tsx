@@ -161,10 +161,10 @@ export default function ProcessesPage() {
             className="card-item"
             onClick={() => router.push(`/processes/${process.id}`)}
           >
-            <CardHeader>
+            <CardHeader className="card-item-header">
               <CardTitle>{process.name}</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="card-item-content">
               <p className="card-item-description-clamp">
                 {process.description || 'No description'}
               </p>

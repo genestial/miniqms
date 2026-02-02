@@ -7,6 +7,12 @@ const hasSemanticClass = (className?: string) => {
   if (!className) return false
   const semanticClasses = [
     'card-item',
+    'card-item-header',
+    'card-item-content',
+    'dashboard-card',
+    'dashboard-card-header',
+    'dashboard-card-title',
+    'dashboard-card-content',
     'detail-page-container',
     'page-container',
     'loading-container',
