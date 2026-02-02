@@ -39,13 +39,13 @@ export function ClauseCards({ cards }: ClauseCardsProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="dashboard-section-title">Clause Readiness</h2>
+      <h2 className="section-heading">Clause Readiness</h2>
       <div className="grid-cards">
         {cards.map((card) => (
-          <Card key={card.clauseCode} className="dashboard-clause-card">
-            <CardHeader>
+          <Card key={card.clauseCode} className="dashboard-card">
+            <CardHeader className="dashboard-card-header">
               <div className="flex items-center justify-between">
-                <CardTitle>
+                <CardTitle className="dashboard-card-title text-lg">
                   {card.clauseCode} - {card.clauseTitle}
                 </CardTitle>
                 <Badge variant={getStatusVariant(card.status)}>
@@ -53,7 +53,7 @@ export function ClauseCards({ cards }: ClauseCardsProps) {
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="dashboard-card-content space-y-4">
               <p className="text-muted">
                 {card.plainEnglishWhy}
               </p>
@@ -61,7 +61,7 @@ export function ClauseCards({ cards }: ClauseCardsProps) {
               {card.missingItems.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Missing Items:</p>
-                  <ul className="list-disc list-inside space-y-1 text-muted">
+                  <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
                     {card.missingItems.map((item, idx) => (
                       <li key={idx}>{item}</li>
                     ))}

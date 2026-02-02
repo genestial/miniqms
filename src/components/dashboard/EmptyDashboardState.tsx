@@ -12,15 +12,15 @@ export function EmptyDashboardState({
   onResumeOnboarding,
 }: EmptyDashboardStateProps) {
   return (
-    <Card className="border-dashed">
-      <CardHeader className="text-center">
+    <Card className="dashboard-card border-dashed">
+      <CardHeader className="dashboard-card-header text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
           <FileText className="h-8 w-8 text-muted-foreground" />
         </div>
-        <CardTitle>Welcome to Mini QMS</CardTitle>
+        <CardTitle className="dashboard-card-title">Welcome to Mini QMS</CardTitle>
       </CardHeader>
-      <CardContent className="text-center space-y-4">
-        <p className="text-muted-foreground">
+      <CardContent className="dashboard-card-content text-center space-y-4">
+        <p className="text-muted">
           Get started by completing the onboarding process. This will help you
           set up your Quality Management System and become ISO 9001 compliant.
         </p>

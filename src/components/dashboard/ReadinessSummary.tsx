@@ -21,14 +21,14 @@ export function ReadinessSummary({
 }: ReadinessSummaryProps) {
   return (
     <Card className="dashboard-card">
-      <CardHeader>
-        <CardTitle className="dashboard-title">ISO 9001 Readiness</CardTitle>
+      <CardHeader className="dashboard-card-header">
+        <CardTitle className="dashboard-card-title">ISO 9001 Readiness</CardTitle>
       </CardHeader>
-      <CardContent className="dashboard-content">
+      <CardContent className="dashboard-card-content space-y-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="dashboard-stat-large">{percentage}%</span>
-            <span className="dashboard-stat-label">
+            <span className="stat-value">{percentage}%</span>
+            <span className="stat-label">
               {greenCount} of {totalClauses} clauses ready
             </span>
           </div>
@@ -36,17 +36,17 @@ export function ReadinessSummary({
         </div>
 
         <div className="flex gap-4">
-          <div className="flex items-center gap-2">
+          <div className="badge-with-count">
             <Badge variant="success">Green</Badge>
-            <span className="text-sm">{greenCount}</span>
+            <span className="badge-count">{greenCount}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="badge-with-count">
             <Badge variant="warning">Amber</Badge>
-            <span className="text-sm">{amberCount}</span>
+            <span className="badge-count">{amberCount}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="badge-with-count">
             <Badge variant="destructive">Red</Badge>
-            <span className="text-sm">{redCount}</span>
+            <span className="badge-count">{redCount}</span>
           </div>
         </div>
       </CardContent>

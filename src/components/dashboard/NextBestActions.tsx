@@ -14,10 +14,10 @@ export function NextBestActions({ actions }: NextBestActionsProps) {
   if (actions.length === 0) {
     return (
       <Card className="dashboard-card">
-        <CardHeader>
-          <CardTitle className="dashboard-title">What To Do Next</CardTitle>
+        <CardHeader className="dashboard-card-header">
+          <CardTitle className="dashboard-card-title">What To Do Next</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="dashboard-card-content">
           <p className="text-muted">
             Great job! No immediate actions needed.
           </p>
@@ -28,15 +28,15 @@ export function NextBestActions({ actions }: NextBestActionsProps) {
 
   return (
     <Card className="dashboard-card">
-      <CardHeader>
-        <CardTitle className="dashboard-title">What To Do Next</CardTitle>
+      <CardHeader className="dashboard-card-header">
+        <CardTitle className="dashboard-card-title">What To Do Next</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="dashboard-card-content">
         <div className="space-y-4">
           {actions.map((action) => (
             <div
               key={action.id}
-              className="dashboard-action-item"
+              className="action-item"
             >
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">

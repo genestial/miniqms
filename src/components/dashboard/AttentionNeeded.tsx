@@ -22,10 +22,10 @@ export function AttentionNeeded({ items }: AttentionNeededProps) {
   if (items.length === 0) {
     return (
       <Card className="dashboard-card">
-        <CardHeader>
-          <CardTitle className="dashboard-title">Attention Needed</CardTitle>
+        <CardHeader className="dashboard-card-header">
+          <CardTitle className="dashboard-card-title">Attention Needed</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="dashboard-card-content">
           <p className="text-muted">
             No items requiring immediate attention.
           </p>
@@ -44,15 +44,15 @@ export function AttentionNeeded({ items }: AttentionNeededProps) {
 
   return (
     <Card className="dashboard-card">
-      <CardHeader>
-        <CardTitle className="dashboard-title">Attention Needed</CardTitle>
+      <CardHeader className="dashboard-card-header">
+        <CardTitle className="dashboard-card-title">Attention Needed</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="dashboard-card-content">
         <div className="space-y-4">
           {items.map((item) => (
             <div
               key={item.id}
-              className="dashboard-action-item"
+              className="action-item"
             >
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">

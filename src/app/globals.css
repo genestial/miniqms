@@ -203,41 +203,48 @@
     @apply text-xs text-muted-foreground;
   }
 
-  /* Dashboard Cards */
+  /* Dashboard Card Styles */
   .dashboard-card {
     @apply rounded-lg border bg-card text-card-foreground shadow-sm;
   }
 
-  .dashboard-card h3,
-  .dashboard-card .dashboard-title {
+  .dashboard-card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .dashboard-card-title {
     @apply text-2xl font-semibold leading-none tracking-tight;
   }
 
-  .dashboard-card .dashboard-content {
-    @apply space-y-4;
+  .dashboard-card-content {
+    @apply p-6 pt-0;
   }
 
-  .dashboard-stat-large {
+  /* Section Headings */
+  .section-heading {
     @apply text-2xl font-bold;
   }
 
-  .dashboard-stat-label {
+  /* Stats Display */
+  .stat-value {
+    @apply text-2xl font-bold;
+  }
+
+  .stat-label {
     @apply text-sm text-muted-foreground;
   }
 
-  .dashboard-section-title {
-    @apply text-2xl font-bold;
-  }
-
-  .dashboard-clause-card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
-  }
-
-  .dashboard-clause-card h3 {
-    @apply text-lg;
-  }
-
-  .dashboard-action-item {
+  /* Action Items */
+  .action-item {
     @apply flex items-start justify-between p-4 border rounded-lg hover:bg-accent transition-colors;
+  }
+
+  /* Badge Groups */
+  .badge-with-count {
+    @apply flex items-center gap-2;
+  }
+
+  .badge-count {
+    @apply text-sm;
   }
 }
