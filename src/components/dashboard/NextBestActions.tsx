@@ -13,12 +13,12 @@ interface NextBestActionsProps {
 export function NextBestActions({ actions }: NextBestActionsProps) {
   if (actions.length === 0) {
     return (
-      <Card>
+      <Card className="dashboard-card">
         <CardHeader>
-          <CardTitle>What To Do Next</CardTitle>
+          <CardTitle className="dashboard-title">What To Do Next</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted">
             Great job! No immediate actions needed.
           </p>
         </CardContent>
@@ -27,26 +27,26 @@ export function NextBestActions({ actions }: NextBestActionsProps) {
   }
 
   return (
-    <Card>
+    <Card className="dashboard-card">
       <CardHeader>
-        <CardTitle>What To Do Next</CardTitle>
+        <CardTitle className="dashboard-title">What To Do Next</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {actions.map((action) => (
             <div
               key={action.id}
-              className="flex items-start justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
+              className="dashboard-action-item"
             >
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">{action.clauseCode}</Badge>
                   <span className="text-sm font-medium">{action.clauseTitle}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted">
                   {action.description}
                 </p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2 text-muted-small">
                   <Clock className="h-3 w-3" />
                   <span>{action.estimatedTime}</span>
                 </div>

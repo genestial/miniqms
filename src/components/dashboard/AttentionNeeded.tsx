@@ -21,12 +21,12 @@ interface AttentionNeededProps {
 export function AttentionNeeded({ items }: AttentionNeededProps) {
   if (items.length === 0) {
     return (
-      <Card>
+      <Card className="dashboard-card">
         <CardHeader>
-          <CardTitle>Attention Needed</CardTitle>
+          <CardTitle className="dashboard-title">Attention Needed</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted">
             No items requiring immediate attention.
           </p>
         </CardContent>
@@ -43,16 +43,16 @@ export function AttentionNeeded({ items }: AttentionNeededProps) {
   }
 
   return (
-    <Card>
+    <Card className="dashboard-card">
       <CardHeader>
-        <CardTitle>Attention Needed</CardTitle>
+        <CardTitle className="dashboard-title">Attention Needed</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {items.map((item) => (
             <div
               key={item.id}
-              className="flex items-start justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
+              className="dashboard-action-item"
             >
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-2">
@@ -64,11 +64,11 @@ export function AttentionNeeded({ items }: AttentionNeededProps) {
                   </Badge>
                   <span className="text-sm font-medium">{item.title}</span>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted">
                   {item.description}
                 </p>
                 {item.dueDate && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-muted-small">
                     <Clock className="h-3 w-3" />
                     <span>Due: {formatDate(item.dueDate)}</span>
                   </div>

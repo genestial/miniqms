@@ -20,15 +20,15 @@ export function ReadinessSummary({
   totalClauses,
 }: ReadinessSummaryProps) {
   return (
-    <Card>
+    <Card className="dashboard-card">
       <CardHeader>
-        <CardTitle>ISO 9001 Readiness</CardTitle>
+        <CardTitle className="dashboard-title">ISO 9001 Readiness</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="dashboard-content">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold">{percentage}%</span>
-            <span className="text-sm text-muted-foreground">
+            <span className="dashboard-stat-large">{percentage}%</span>
+            <span className="dashboard-stat-label">
               {greenCount} of {totalClauses} clauses ready
             </span>
           </div>

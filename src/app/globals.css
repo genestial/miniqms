@@ -202,4 +202,42 @@
   .text-muted-small {
     @apply text-xs text-muted-foreground;
   }
+
+  /* Dashboard Cards */
+  .dashboard-card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .dashboard-card h3,
+  .dashboard-card .dashboard-title {
+    @apply text-2xl font-semibold leading-none tracking-tight;
+  }
+
+  .dashboard-card .dashboard-content {
+    @apply space-y-4;
+  }
+
+  .dashboard-stat-large {
+    @apply text-2xl font-bold;
+  }
+
+  .dashboard-stat-label {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .dashboard-section-title {
+    @apply text-2xl font-bold;
+  }
+
+  .dashboard-clause-card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .dashboard-clause-card h3 {
+    @apply text-lg;
+  }
+
+  .dashboard-action-item {
+    @apply flex items-start justify-between p-4 border rounded-lg hover:bg-accent transition-colors;
+  }
 }

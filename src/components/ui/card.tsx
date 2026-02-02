@@ -5,16 +5,23 @@ import { cn } from "@/lib/utils"
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  // If semantic classes are present, don't apply default Card styles
+  const hasSemanticClass = className?.includes('card-item') || 
+                          className?.includes('detail-page') ||
+                          className?.includes('dashboard-card')
+  
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        !hasSemanticClass && "rounded-lg border bg-card text-card-foreground shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
@@ -32,16 +39,23 @@ CardHeader.displayName = "CardHeader"
 const CardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  // If semantic classes are present, don't apply default CardTitle styles
+  const hasSemanticClass = className?.includes('card-item-title') || 
+                          className?.includes('detail-page-title') ||
+                          className?.includes('dashboard-title')
+  
+  return (
+    <h3
+      ref={ref}
+      className={cn(
+        !hasSemanticClass && "text-2xl font-semibold leading-none tracking-tight",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 CardTitle.displayName = "CardTitle"
 
 const CardDescription = React.forwardRef<
