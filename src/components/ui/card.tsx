@@ -13,6 +13,9 @@ const hasSemanticClass = (className?: string) => {
     'dashboard-card-header',
     'dashboard-card-title',
     'dashboard-card-content',
+    'detail-card',
+    'detail-card-header',
+    'detail-card-content',
     'detail-page-container',
     'page-container',
     'loading-container',
@@ -42,7 +45,7 @@ const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const shouldApplyDefaults = !hasSemanticClass(className)
+  const shouldApplyDefaults = !hasSemanticClass(className) && !className?.includes('detail-card-header')
   return (
     <div
       ref={ref}
@@ -106,7 +109,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const shouldApplyDefaults = !hasSemanticClass(className) && !className?.includes('detail-section') && !className?.includes('empty-state')
+  const shouldApplyDefaults = !hasSemanticClass(className) && !className?.includes('detail-section') && !className?.includes('detail-card-content') && !className?.includes('empty-state')
   return (
     <div
       ref={ref}

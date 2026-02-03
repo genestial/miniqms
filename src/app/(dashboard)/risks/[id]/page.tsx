@@ -174,8 +174,8 @@ export default function RiskDetailPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="detail-card">
+        <CardHeader className="detail-card-header">
           <div className="flex items-center justify-between">
             <CardTitle className="detail-page-title">
               {risk.type === 'RISK' ? 'Risk' : 'Opportunity'}
@@ -183,7 +183,7 @@ export default function RiskDetailPage() {
             <Badge variant="outline" className="status-badge">{risk.status.replace(/_/g, ' ')}</Badge>
           </div>
         </CardHeader>
-        <CardContent className="detail-section">
+        <CardContent className="detail-card-content detail-section">
           <div className="detail-field">
             <label className="detail-field-label">Description</label>
             <p className="detail-field-value">{risk.description}</p>

@@ -132,11 +132,11 @@ export default function ProblemDetailPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
         </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Problem/Improvement</CardTitle>
+        <Card className="detail-card">
+          <CardHeader className="detail-card-header">
+            <CardTitle className="detail-page-title">Edit Problem/Improvement</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="detail-card-content">
             <ProblemForm
               onSubmit={handleUpdate}
               onCancel={() => setEditing(false)}
@@ -180,8 +180,8 @@ export default function ProblemDetailPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="detail-card">
+        <CardHeader className="detail-card-header">
           <div className="flex items-center justify-between">
             <CardTitle className="detail-page-title">
               {problem.source.replace(/_/g, ' ')}
@@ -189,7 +189,7 @@ export default function ProblemDetailPage() {
             <Badge variant="outline" className="status-badge">{problem.status.replace(/_/g, ' ')}</Badge>
           </div>
         </CardHeader>
-        <CardContent className="detail-section">
+        <CardContent className="detail-card-content detail-section">
           <div className="detail-field">
             <label className="detail-field-label">Description</label>
             <p className="detail-field-value whitespace-pre-wrap">{problem.description}</p>

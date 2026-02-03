@@ -161,11 +161,11 @@ export default function ProcessDetailPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="detail-card">
+        <CardHeader className="detail-card-header">
           <CardTitle className="detail-page-title">{process.name}</CardTitle>
         </CardHeader>
-        <CardContent className="detail-section">
+        <CardContent className="detail-card-content detail-section">
           <div className="detail-field">
             <label className="detail-field-label">Description</label>
             <p className="detail-field-value">

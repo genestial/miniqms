@@ -179,14 +179,14 @@ export default function EvidenceDetailPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="detail-card">
+        <CardHeader className="detail-card-header">
           <div className="flex items-center justify-between">
             <CardTitle className="detail-page-title">{evidence.title}</CardTitle>
             <Badge variant="outline" className="status-badge">{evidence.status.replace(/_/g, ' ')}</Badge>
           </div>
         </CardHeader>
-        <CardContent className="detail-section">
+        <CardContent className="detail-card-content detail-section">
           <div className="detail-grid">
             <div className="detail-field">
               <label className="detail-field-label">Type</label>

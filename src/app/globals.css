@@ -145,6 +145,19 @@
     @apply text-3xl;
   }
 
+  /* Detail Page Card */
+  .detail-card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  .detail-card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .detail-card-content {
+    @apply p-6 pt-0;
+  }
+
   .detail-section {
     @apply space-y-6;
   }
@@ -173,6 +186,11 @@
     @apply pt-4 border-t;
   }
 
+  /* Status Badge - override Badge component defaults */
+  .status-badge {
+    @apply capitalize;
+  }
+
   /* Form Styles */
   .form-container {
     @apply space-y-4;
@@ -191,9 +209,9 @@
     @apply pt-6 text-center text-muted-foreground;
   }
 
-  /* Status Badges */
+  /* Status Badge - complete styling when semantic class is used */
   .status-badge {
-    @apply capitalize;
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground capitalize;
   }
 
   /* Loading States */

@@ -170,13 +170,14 @@ export default function AuditDetailPage() {
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="detail-page-title">
-            Audit - {new Date(audit.auditDate).toLocaleDateString()}
-          </CardTitle>
+      <Card className="detail-card">
+        <CardHeader className="detail-card-header">
+          <div className="flex items-center justify-between">
+            <CardTitle className="detail-page-title">{evidence.title}</CardTitle>
+            <Badge variant="outline" className="status-badge">{evidence.status.replace(/_/g, ' ')}</Badge>
+          </div>
         </CardHeader>
-        <CardContent className="detail-section">
+        <CardContent className="detail-card-content detail-section">
           <div className="detail-field">
             <label className="detail-field-label">Audit Date</label>
             <p className="detail-field-value">
