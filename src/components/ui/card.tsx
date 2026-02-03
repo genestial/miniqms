@@ -60,19 +60,17 @@ const CardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => {
-  // Don't apply defaults if:
+  // Apply defaults UNLESS:
   // 1. className contains semantic classes
-  // 2. className is empty/undefined (likely used in semantic context like card-item)
-  // 3. className contains semantic indicators
+  // 2. className contains semantic indicators
+  // Note: If className is undefined/empty, apply defaults (for regular Cards)
+  // CSS will override via selectors like .card-item h3 for semantic contexts
   const shouldApplyDefaults = 
-    className !== undefined && 
-    className !== null && 
-    className !== '' &&
     !hasSemanticClass(className) && 
-    !className.includes('card-item-title') && 
-    !className.includes('detail-page-title') && 
-    !className.includes('page-title') &&
-    !className.includes('dashboard-card-title')
+    !className?.includes('card-item-title') && 
+    !className?.includes('detail-page-title') && 
+    !className?.includes('page-title') &&
+    !className?.includes('dashboard-card-title')
   return (
     <h3
       ref={ref}
