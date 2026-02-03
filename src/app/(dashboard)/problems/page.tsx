@@ -193,11 +193,11 @@ export default function ProblemsPage() {
                 {problem.description}
               </p>
               {problem.rootCause && (
-                <p className="text-xs text-muted-foreground mt-2 line-clamp-1">
+                <p className="card-metadata-inline line-clamp-1">
                   <strong>Root Cause:</strong> {problem.rootCause}
                 </p>
               )}
-              <div className="mt-4 text-xs text-muted-foreground">
+              <div className="card-metadata">
                 Identified: {new Date(problem.dateIdentified).toLocaleDateString()}
                 {problem.dueDate && (
                   <div>Due: {new Date(problem.dueDate).toLocaleDateString()}</div>
