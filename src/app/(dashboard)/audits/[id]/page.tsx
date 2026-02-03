@@ -127,11 +127,11 @@ export default function AuditDetailPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
         </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Internal Audit</CardTitle>
+        <Card className="detail-card">
+          <CardHeader className="detail-card-header">
+            <CardTitle className="detail-page-title">Edit Internal Audit</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="detail-card-content">
             <AuditForm
               onSubmit={handleUpdate}
               onCancel={() => setEditing(false)}
