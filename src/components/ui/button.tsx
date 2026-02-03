@@ -52,12 +52,13 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
-    // If semantic button class is present, don't apply buttonVariants defaults
-    const shouldApplyDefaults = !hasSemanticButtonClass(className)
+    // If semantic button class is present, don't apply buttonVariants at all
+    // The semantic class will handle all styling
+    const hasSemantic = hasSemanticButtonClass(className)
     return (
       <Comp
         className={cn(
-          shouldApplyDefaults && buttonVariants({ variant, size }),
+          !hasSemantic && buttonVariants({ variant, size }),
           className
         )}
         ref={ref}
