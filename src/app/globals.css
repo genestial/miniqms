@@ -73,9 +73,11 @@
     @apply p-6 pt-0;
   }
 
-  /* Override CardTitle defaults inside card-item - no need for card-item-title class */
+  /* Override CardTitle defaults inside card-item - use !important to override component defaults */
   .card-item h3,
-  .card-item h3[class*="CardTitle"] {
+  .card-item-header h3,
+  .card-item h3[class*="CardTitle"],
+  .card-item-header h3[class*="CardTitle"] {
     @apply text-lg font-semibold leading-none tracking-tight !important;
   }
 
