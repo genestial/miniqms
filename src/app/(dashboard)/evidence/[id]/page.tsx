@@ -134,11 +134,11 @@ export default function EvidenceDetailPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Cancel Edit
         </Button>
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Evidence</CardTitle>
+        <Card className="detail-card">
+          <CardHeader className="detail-card-header">
+            <CardTitle className="detail-page-title">Edit Evidence</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="detail-card-content">
             <EvidenceForm
               onSubmit={handleUpdate}
               onCancel={() => setEditing(false)}
