@@ -214,6 +214,15 @@
     @apply text-xs text-muted-foreground;
   }
 
+  /* Metadata/Footer Text in Cards */
+  .card-metadata {
+    @apply mt-4 text-xs text-muted-foreground;
+  }
+
+  .card-metadata-inline {
+    @apply mt-2 text-xs text-muted-foreground;
+  }
+
   /* Dashboard Card Styles */
   .dashboard-card {
     @apply rounded-lg border bg-card text-card-foreground shadow-sm;
